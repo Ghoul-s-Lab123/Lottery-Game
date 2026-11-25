@@ -1,0 +1,114 @@
+Implement phase 03: actual Blender assets for “Find the Winning Lottery.”
+
+MANDATORY
+Create tickets and all ten tools in Blender, using its integration or Python API. Save editable .blend sources, export actual meshes, and import them into Roblox when the connection supports it.
+If Blender or import/upload is unavailable, report exactly what is blocked. Do not substitute Roblox Parts or claim an import happened.
+Inspect existing assets first and reuse valid work.
+
+VISUAL DIRECTION
+Polished stylized low-poly, bold readable silhouettes, slightly exaggerated proportions, cohesive bright colors, restrained bevels, clean normals, consistent scale. Quality comes from shape and color rather than dense geometry.
+If the original design pictures are attached, inspect them and follow their concrete visual details. If unavailable, use this written direction and disclose the limitation.
+No excessive neon, random LEDs, high-resolution texture waste, or invisible geometry.
+
+TICKETS
+One lightweight base mesh with thin paper proportions, recognizable ticket outline, printed numbers, and a perforated/torn-stub impression.
+Make approximately 20 regular color/design variants using shared geometry and an efficient atlas or shared textures.
+Model a metallic golden variant with a star emblem and readable gold silhouette. Printed detail and tiny perforations should use textures rather than extra geometry.
+Use readable gold material/color at gameplay distance; actual animated glint belongs to the game effect, not a claim that an exported mesh animates itself.
+Avoid coplanar faces and z-fighting in stacked views.
+
+TOOLS — IN ORDER
+1. Ticket Grabber
+2. Dustpan Scoop
+3. Hand Rake
+4. Push Broom
+5. Shovel
+6. Handheld Vacuum
+7. Leaf Blower
+8. Shop Vac
+9. Rotary Sweeper
+10. Ride-on Ticket Vacuum
+
+Make tiers visibly distinct. Prefer one mesh for a static tool; split wheels, handles, rotors, or other parts only when motion/function requires it. Keep hand grips, working ends, and attachment points sensible.
+
+PROJECT TRIANGLE BUDGETS
+Regular ticket: target 12–40, maximum 40.
+Golden ticket: target 12–80, maximum 80.
+Simple handheld tool: target 150–600, maximum 600.
+Advanced handheld equipment: target 400–1,200, maximum 1,200.
+Rotary Sweeper: target 800–1,800, maximum 1,800.
+Ride-on Vacuum: target 1,500–3,000, maximum 3,000.
+These are project budgets, not engine limits. Fewer is better when the silhouette holds up. Never create 50,000-triangle versions of these objects. Simplify any over-budget asset before delivery.
+
+TECHNICAL QUALITY
+Count triangles AFTER modifiers and triangulation, across every component of the asset. Verify exported/imported geometry where possible.
+Remove duplicate vertices, hidden internal faces, unnecessary bevel segments and excessive material slots.
+Apply intended transforms, verify units with a test import, set useful pivots and names, inspect normals and UVs.
+Use shared modest textures; start with 512px atlases and increase only when the actual camera view justifies it.
+Use simple collision proxies for equipment where needed; tickets do not need individually simulated collision.
+Organize source, export and imported assets consistently.
+
+DELIVER AND VERIFY
+Provide the .blend source, exported meshes, textures, and a compact manifest listing each asset, measured triangle count, mesh/material counts, texture size, import status, and identifier if actually uploaded.
+Inspect the models from normal player camera distance. Check grip positions, scale, silhouette and mobile readability.
+Do not count unfinished placeholders as completed assets. Stop after reporting verified results.
+
+
+V6 SCALE NOTE
+Use the preserved four sheets for tickets/tools. Actual tickets are flat paper, including gold. Fit equipment inside the large pit and its clear floor pad. The map concept does not introduce extra tools. Vehicles are re-equipped on the pit-floor pad; ladders are for characters.
+
+
+CURRENT CONTRACT (v6 + owner changes, updated 2026-11-25) — applies to every phase
+This replaces the earlier "V6 FINAL CONTRACT" wherever the two differ. The change log is in GamePrompts/OWNER_CHANGES.md.
+
+PLACES
+TWO Roblox places in one universe (10779008507).
+LOBBY place = the start place "Lottery-Game" (id 126779117472575), server size 16. It is the social hub where parties form. It has no shops or economy, and it never claims or saves player profiles.
+GAMEPLAY place = "gameplay" (id 81218982278176), server size 4. Each party gets one reserved (private) server. Players who arrive any other way are sent back to the Lobby.
+
+GAMEPLAY MAP
+ONE continuous indoor map per gameplay server: the back stockroom of a ticket store. Solid perimeter walls and a complete high roof enclose BOTH zones, which adjoin directly with open internal access and no divider:
+- the smaller in-map lobby on the LEFT, with spawn and the TOOLS, UPGRADES, EXCHANGE and INSPECT counters
+- the much larger ticket pit on the RIGHT
+
+Dimensions (studs; adjustable after playtests):
+- Pit opening 100 x 160 (X 0..100, Z -80..80), flat structural bottom 40.8 below the rim (1.7x the original 24).
+- In-map lobby 120 x 120 (X -130..-10, Z -60..60).
+- Rim walkway 10 wide.
+- Roof underside 28 above the rim.
+- Two full-height yellow ladders on the lobby-facing (west) pit wall, at Z -24 and +24, are the normal way back up.
+
+PARTIES (Lobby place)
+- Walking into a free party circle creates a party, and that player becomes the leader.
+- The leader picks FRIENDS (only the leader's Roblox friends may join) or PUBLIC (anyone may join), and a max size of 1, 2, 3 or 4. The leader can change both while waiting.
+- Others join by walking into the circle if the privacy setting allows it and there is room.
+- Only the leader sees the START button. A 30-second countdown starts when the party is created and restarts from 30 whenever a member joins or the leader changes a setting; if it reaches 0, the party teleports automatically.
+- The whole party travels together to a fresh reserved gameplay server.
+
+HUNT
+- ONE shared ticket pile per gameplay server. Each player who joins the server adds a batch of tickets; leaving never removes tickets.
+- One hidden golden ticket per hunt.
+- There is NO Return-to-Lobby button during the hunt; to go back early, a player leaves the game.
+- When the golden ticket is found, every player in that server gets exactly two options: LEAVE (exit the game) or RETURN TO LOBBY (teleport to the Lobby place). These options appear ONLY after the golden ticket is found.
+
+SAVING
+- Save Money, OwnedToolIds and UpgradeLevels per player. Only the Gameplay place owns and writes profiles (session-locked).
+- Never persist pit state.
+- Bag, inspection, equipped selection, vehicle transforms and discovery counts are session-only.
+- Schema, lock and purchase-receipt metadata may be persisted for reliability.
+
+MONEY AND PURCHASES
+- Earn money by fixed-value ticket exchange, or buy fixed Money packs with Robux.
+- Each tool and permanent upgrade has an earned-money route and an optional direct Robux route to the same benefit. Robux purchases are fulfilled in the Gameplay place.
+- The Lobby place must still set ProcessReceipt and answer NotProcessedYet, so no purchase is ever auto-acknowledged there.
+- Product IDs, prices, amounts and balance are owner configuration. Never invent IDs or enable an unconfigured paid button.
+
+GOLDEN REWARD
+The golden-ticket finder receives a special reward in the final game. The exact reward is deliberately TBD. Keep a disabled, server-only finder-reward hook with honest development feedback.
+
+WORKING RULES
+- Inspect existing work, preserve valid assets, and implement only the current phase.
+- Use concise, server-authoritative Luau. Consult current official Roblox docs for platform APIs (TeleportService, MarketplaceService, DataStoreService, Players:IsFriendsWith).
+- Report actual changes, tests and blockers; never claim work that wasn't done.
+- Open owner decisions are listed in _Reference_Info/OWNER_DECISIONS_PENDING.txt.
+- Diagrams 06 and 07 still show the earlier 24-stud depth, 90 x 90 lobby and one-place wording. The written values above win.

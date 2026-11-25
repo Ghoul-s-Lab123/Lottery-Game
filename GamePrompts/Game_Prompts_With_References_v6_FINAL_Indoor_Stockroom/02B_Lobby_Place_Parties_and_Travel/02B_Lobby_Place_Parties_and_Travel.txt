@@ -1,0 +1,139 @@
+STATUS 2026-11-25: built. Lobby saved as v16, Gameplay as v9. The multi-player party rules still need a multi-client test.
+- API note: reserved servers use TeleportOptions.ReservedServerId = a new GUID. ReserveServerAsync and ReservedServerAccessCode are deprecated in the current docs.
+- Studio Test mode can teleport between the two places. The destination loads its LAST SAVED version, so save both places before testing travel.
+- Lobby:
+  - LobbyMap (6 circles)
+  - ServerScriptService.Lobby.{Main, Parties}
+  - StarterPlayerScripts.PartyClient
+- Gameplay:
+  - Server.{Access, HuntState, PostGold, DevHooks}
+  - Session.exchangeBag
+  - PlayerData.setAdmission
+  - StarterPlayerScripts.PostGoldClient
+- Shared (identical in both places): Config (adds Party and Economy) and Travel (teleport with retry and backoff).
+- Phase 05 must call HuntState.resolve(finder) when gold is found.
+- Studio tests passed:
+  - create, settings, timer restart, input validation, rate limit
+  - START → Gameplay; 30 s auto-start → Gameplay
+  - teleport-failure retries, then the honest fallback message
+  - non-reserved Gameplay server → bounced to the Lobby
+  - post-gold panel hidden before gold; early choice ignored
+  - LEAVE and RETURN both auto-exchange the bag once
+  - Lobby → Gameplay → Lobby round trips with saves carried over
+- Still to test:
+  - with 2–3 players: join PUBLIC / FRIENDS (refused path), party full, size below member count refused, member walks out, leader walks out or disconnects → disband, non-leader START refused
+  - FRIENDS join by a real friend (published test)
+  - rejoin after a disconnect → sent to the Lobby (published test)
+
+Implement phase 02B: the Lobby place, parties and party travel to the Gameplay place, plus the post-gold LEAVE / RETURN TO LOBBY options.
+Owner-specified 2026-11-25. No reference image exists yet for the Lobby place look; keep it a simple blockout in the same cream/teal/yellow ticket-store style, and flag the visual design as pending.
+
+PLACES
+- Lobby = start place "Lottery-Game" (id 126779117472575), server size 16.
+- Gameplay = "gameplay" (id 81218982278176), server size 4.
+- Same universe, so both share DataStores. The Lobby never claims or saves a profile, so a teleport never waits on a Lobby save.
+- The Lobby must still set MarketplaceService.ProcessReceipt and answer NotProcessedYet for everything. Pending purchases then resolve in the Gameplay place and are never auto-acknowledged.
+
+PARTY CIRCLES (Lobby place)
+Six clearly marked party circles on the Lobby floor (owner decision). Each circle holds at most one party.
+- CREATE: a player who walks into an empty circle creates a party and becomes its leader.
+- LEADER SETTINGS (leader-only UI):
+  - Privacy: FRIENDS = only the leader's Roblox friends may join. PUBLIC = anyone may join.
+  - Max size: 1, 2, 3 or 4.
+  - The leader can change both at any time before travel.
+  - Max size cannot be set below the current member count.
+- JOIN: another player joins by walking into the circle when:
+  - the privacy allows it (FRIENDS: checked server-side with Players:IsFriendsWith / Player:IsFriendsWithAsync, cached, failure = not allowed), and
+  - the party has room.
+  Players who may not join see a short reason ("Friends only" / "Party full") and are not added.
+- LEAVE: a member leaves the party by walking out of the circle, or by disconnecting.
+- START: only the leader sees and can press START.
+- AUTO-START: a 30-second countdown starts the moment the leader creates the party and RESTARTS from 30 whenever a member joins or the leader changes privacy or size (owner decision). It is shown to the whole party. At 0, if the leader has not pressed START, the party teleports automatically. Pressing START teleports immediately.
+- After travel begins, the party is locked: no joins, no settings changes, and the circle frees up once everyone has left.
+- Server authority: the client sends only intents (create/join happen by server-side zone detection; settings, start). The server validates leader identity, ranges and state, and rate-limits remotes. Party state is runtime-only and never saved.
+
+TRAVEL
+- On START or timeout, the server reserves a NEW Gameplay server for the party (TeleportService:ReserveServerAsync / ReserveServer) and teleports all current members together with TeleportService:TeleportAsync and TeleportOptions.ReservedServerAccessCode.
+- Pass party info in teleport data. Treat client-visible teleport data as untrusted; the Gameplay server only uses it for display and grouping.
+- Handle TeleportInitFailed: retry with backoff. Members who still fail stay in the Lobby with an honest message, and the party is released.
+- Gameplay place:
+  - A player who arrives outside a reserved server (direct join, follow, or game.PrivateServerId == "") is teleported to the Lobby.
+  - Reserved gameplay servers are only reachable through the party teleport.
+- A disconnected player cannot rejoin their party's reserved server. On rejoin they land in the Lobby. (Owner decision.)
+
+POST-GOLD OPTIONS (Gameplay place)
+- There is NO Return-to-Lobby button during the hunt. To go back early, a player leaves the game.
+- When the golden ticket is found (phase 05 resolution), every player in that server sees exactly two options:
+  - LEAVE: the server removes the player from the game with a friendly message.
+  - RETURN TO LOBBY: teleport to the Lobby place (any public Lobby server).
+- These options appear ONLY after the golden ticket is found. Server-validate that the hunt is resolved before acting on either.
+- Before either action, the server auto-exchanges the player's unexchanged bag at the normal fixed value, exactly once (owner decision), then acts.
+- Saved progress is written before or during the teleport by the normal leave save. RETURN TO LOBBY must not depend on that save completing first.
+
+DONE WHEN
+Test in Studio (multi-client local server) and, where Studio cannot teleport, in a published test with the owner:
+- create; FRIENDS vs PUBLIC join rules; party full
+- leader changes size (including below the member count, which must be refused)
+- leave by walking out; the leader walking out or disconnecting disbands the whole party
+- START by the leader only; non-leader START refused
+- 30-second auto-start
+- teleport failure and retry
+- direct join to the Gameplay place bounced to the Lobby
+- post-gold options shown only after gold; LEAVE and RETURN TO LOBBY both work and auto-exchange the bag exactly once
+- profile lease handoff Lobby -> Gameplay -> Lobby with no load failure
+Label teleport tests that Studio cannot perform as pending published tests. Report what actually ran.
+
+CURRENT CONTRACT (v6 + owner changes, updated 2026-11-25) — applies to every phase
+This replaces the earlier "V6 FINAL CONTRACT" wherever the two differ. The change log is in GamePrompts/OWNER_CHANGES.md.
+
+PLACES
+TWO Roblox places in one universe (10779008507).
+LOBBY place = the start place "Lottery-Game" (id 126779117472575), server size 16. It is the social hub where parties form. It has no shops or economy, and it never claims or saves player profiles.
+GAMEPLAY place = "gameplay" (id 81218982278176), server size 4. Each party gets one reserved (private) server. Players who arrive any other way are sent back to the Lobby.
+
+GAMEPLAY MAP
+ONE continuous indoor map per gameplay server: the back stockroom of a ticket store. Solid perimeter walls and a complete high roof enclose BOTH zones, which adjoin directly with open internal access and no divider:
+- the smaller in-map lobby on the LEFT, with spawn and the TOOLS, UPGRADES, EXCHANGE and INSPECT counters
+- the much larger ticket pit on the RIGHT
+
+Dimensions (studs; adjustable after playtests):
+- Pit opening 100 x 160 (X 0..100, Z -80..80), flat structural bottom 40.8 below the rim (1.7x the original 24).
+- In-map lobby 120 x 120 (X -130..-10, Z -60..60).
+- Rim walkway 10 wide.
+- Roof underside 28 above the rim.
+- Two full-height yellow ladders on the lobby-facing (west) pit wall, at Z -24 and +24, are the normal way back up.
+
+PARTIES (Lobby place)
+- Walking into a free party circle creates a party, and that player becomes the leader.
+- The leader picks FRIENDS (only the leader's Roblox friends may join) or PUBLIC (anyone may join), and a max size of 1, 2, 3 or 4. The leader can change both while waiting.
+- Others join by walking into the circle if the privacy setting allows it and there is room.
+- Only the leader sees the START button. A 30-second countdown starts when the party is created and restarts from 30 whenever a member joins or the leader changes a setting; if it reaches 0, the party teleports automatically.
+- The whole party travels together to a fresh reserved gameplay server.
+
+HUNT
+- ONE shared ticket pile per gameplay server. Each player who joins the server adds a batch of tickets; leaving never removes tickets.
+- One hidden golden ticket per hunt.
+- There is NO Return-to-Lobby button during the hunt; to go back early, a player leaves the game.
+- When the golden ticket is found, every player in that server gets exactly two options: LEAVE (exit the game) or RETURN TO LOBBY (teleport to the Lobby place). These options appear ONLY after the golden ticket is found.
+
+SAVING
+- Save Money, OwnedToolIds and UpgradeLevels per player. Only the Gameplay place owns and writes profiles (session-locked).
+- Never persist pit state.
+- Bag, inspection, equipped selection, vehicle transforms and discovery counts are session-only.
+- Schema, lock and purchase-receipt metadata may be persisted for reliability.
+
+MONEY AND PURCHASES
+- Earn money by fixed-value ticket exchange, or buy fixed Money packs with Robux.
+- Each tool and permanent upgrade has an earned-money route and an optional direct Robux route to the same benefit. Robux purchases are fulfilled in the Gameplay place.
+- The Lobby place must still set ProcessReceipt and answer NotProcessedYet, so no purchase is ever auto-acknowledged there.
+- Product IDs, prices, amounts and balance are owner configuration. Never invent IDs or enable an unconfigured paid button.
+
+GOLDEN REWARD
+The golden-ticket finder receives a special reward in the final game. The exact reward is deliberately TBD. Keep a disabled, server-only finder-reward hook with honest development feedback.
+
+WORKING RULES
+- Inspect existing work, preserve valid assets, and implement only the current phase.
+- Use concise, server-authoritative Luau. Consult current official Roblox docs for platform APIs (TeleportService, MarketplaceService, DataStoreService, Players:IsFriendsWith).
+- Report actual changes, tests and blockers; never claim work that wasn't done.
+- Open owner decisions are listed in _Reference_Info/OWNER_DECISIONS_PENDING.txt.
+- Diagrams 06 and 07 still show the earlier 24-stud depth, 90 x 90 lobby and one-place wording. The written values above win.

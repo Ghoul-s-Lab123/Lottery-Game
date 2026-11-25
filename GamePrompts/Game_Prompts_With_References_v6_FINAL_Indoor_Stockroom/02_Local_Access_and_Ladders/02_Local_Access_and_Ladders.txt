@@ -1,0 +1,97 @@
+STATUS 2026-11-25: done in the Gameplay place (saved as v6). The Lobby place was cleaned (saved as v13).
+- The phase 01 scripts and map now live in Gameplay. Lobby keeps only Shared.Config, a placeholder floor and spawn, and a NotProcessedYet ProcessReceipt.
+- Ladders: an invisible TrussPart climbs; the yellow rails, rungs and handrails are non-colliding decoration.
+- Keep-clear zones (landings, floor strip, equipment pad, top exits) are in Config.Map.KeepClear and LadderTopExits. Phase 05 must skip them.
+- Characters don't collide with each other. Server.Movement.isOnLadder() exists for phase 07 tools.
+- Still to do in later phases: pit snapshot for late arrivals (05), ride-on dismount and pad return (07/09), real touch and multi-client tests.
+
+Implement phase 02: physical movement between the in-map lobby and the pit inside one gameplay server.
+First, if not yet done, move the phase 01 work into the Gameplay place (see phase 01 STATUS).
+Players spawn in the left in-map lobby, walk directly onto the pit's west rim, descend a ladder or safely drop onto the current ticket surface, hunt together, then climb a ladder back to the in-map lobby. A solo party uses this exact same map. Party creation and travel live in the Lobby place (phase 02B); there is no party UI or loading gate inside the gameplay map.
+Gameplay server size is 4 (one party). All connected players with writable loaded profiles can interact. A party member who arrives late, or a player whose teleport retried, receives the current versioned pit snapshot. Each arrival adds its ticket batch (phase 05) but never regenerates or reshuffles the existing pile.
+
+LADDERS
+- Place two climbable ladders on the lobby-facing wall at Z=-24 and Z=24 in the reference coordinates.
+- Each spans the entire 40.8-stud depth and has a clear 8 x 8-stud bottom landing and top exit.
+- Keep landing pockets and approaches free of tickets, equipment and rails at all fill levels.
+- Add a narrow clear floor strip connecting the bottom landings, not an upward ramp.
+- Use reliable climb collision, grip/handrail presentation and mobile movement.
+- A ladder must remain reachable when the pile is full, partly dug or empty. Do not bury lower segments or let pile collision cover the approach.
+- Measured climb in the blockout: about 6.4 s from floor to rim.
+
+DEATH, RESPAWN AND LEAVING
+- Ordinary descent should not impose fall damage.
+- Death respawns the character in the in-map lobby. Loaded money/tools/upgrades and the runtime bag survive within the same connection.
+- Death, shop visits and climbing must never reset the pit.
+- There is NO Return-to-Lobby button during the hunt. To go back early, a player leaves the game. The only in-game route back to the Lobby place is the post-gold RETURN TO LOBBY option (phase 02B / 05).
+- No player collision bottleneck at ladders. Stop tools while climbing.
+- Ride-on users dismount onto safe pit-floor clearance, return the machine to the runtime equipment pad, and climb as a character. Tools are owned inventory, not machines that must be carried up a ladder.
+
+DONE WHEN
+Test on keyboard and touch:
+- in-map lobby to pit and back
+- both ladders with full, partial and empty piles
+- two simultaneous climbers
+- respawn, late party arrival and disconnect
+No movement event resets the pit or saves excavation. Report the environments tested.
+
+INDOOR MOVEMENT
+- Both zones are inside the same roofed storage room.
+- Ladder exits lead onto the indoor rim, never outdoors or through a door into a different place.
+- Check ceiling and camera clearance at the ladder top.
+- Respawn preserves all saved upgrades as well as tools and money; climbing never resets them.
+
+CURRENT CONTRACT (v6 + owner changes, updated 2026-11-25) — applies to every phase
+This replaces the earlier "V6 FINAL CONTRACT" wherever the two differ. The change log is in GamePrompts/OWNER_CHANGES.md.
+
+PLACES
+TWO Roblox places in one universe (10779008507).
+LOBBY place = the start place "Lottery-Game" (id 126779117472575), server size 16. It is the social hub where parties form. It has no shops or economy, and it never claims or saves player profiles.
+GAMEPLAY place = "gameplay" (id 81218982278176), server size 4. Each party gets one reserved (private) server. Players who arrive any other way are sent back to the Lobby.
+
+GAMEPLAY MAP
+ONE continuous indoor map per gameplay server: the back stockroom of a ticket store. Solid perimeter walls and a complete high roof enclose BOTH zones, which adjoin directly with open internal access and no divider:
+- the smaller in-map lobby on the LEFT, with spawn and the TOOLS, UPGRADES, EXCHANGE and INSPECT counters
+- the much larger ticket pit on the RIGHT
+
+Dimensions (studs; adjustable after playtests):
+- Pit opening 100 x 160 (X 0..100, Z -80..80), flat structural bottom 40.8 below the rim (1.7x the original 24).
+- In-map lobby 120 x 120 (X -130..-10, Z -60..60).
+- Rim walkway 10 wide.
+- Roof underside 28 above the rim.
+- Two full-height yellow ladders on the lobby-facing (west) pit wall, at Z -24 and +24, are the normal way back up.
+
+PARTIES (Lobby place)
+- Walking into a free party circle creates a party, and that player becomes the leader.
+- The leader picks FRIENDS (only the leader's Roblox friends may join) or PUBLIC (anyone may join), and a max size of 1, 2, 3 or 4. The leader can change both while waiting.
+- Others join by walking into the circle if the privacy setting allows it and there is room.
+- Only the leader sees the START button. A 30-second countdown starts when the party is created and restarts from 30 whenever a member joins or the leader changes a setting; if it reaches 0, the party teleports automatically.
+- The whole party travels together to a fresh reserved gameplay server.
+
+HUNT
+- ONE shared ticket pile per gameplay server. Each player who joins the server adds a batch of tickets; leaving never removes tickets.
+- One hidden golden ticket per hunt.
+- There is NO Return-to-Lobby button during the hunt; to go back early, a player leaves the game.
+- When the golden ticket is found, every player in that server gets exactly two options: LEAVE (exit the game) or RETURN TO LOBBY (teleport to the Lobby place). These options appear ONLY after the golden ticket is found.
+
+SAVING
+- Save Money, OwnedToolIds and UpgradeLevels per player. Only the Gameplay place owns and writes profiles (session-locked).
+- Never persist pit state.
+- Bag, inspection, equipped selection, vehicle transforms and discovery counts are session-only.
+- Schema, lock and purchase-receipt metadata may be persisted for reliability.
+
+MONEY AND PURCHASES
+- Earn money by fixed-value ticket exchange, or buy fixed Money packs with Robux.
+- Each tool and permanent upgrade has an earned-money route and an optional direct Robux route to the same benefit. Robux purchases are fulfilled in the Gameplay place.
+- The Lobby place must still set ProcessReceipt and answer NotProcessedYet, so no purchase is ever auto-acknowledged there.
+- Product IDs, prices, amounts and balance are owner configuration. Never invent IDs or enable an unconfigured paid button.
+
+GOLDEN REWARD
+The golden-ticket finder receives a special reward in the final game. The exact reward is deliberately TBD. Keep a disabled, server-only finder-reward hook with honest development feedback.
+
+WORKING RULES
+- Inspect existing work, preserve valid assets, and implement only the current phase.
+- Use concise, server-authoritative Luau. Consult current official Roblox docs for platform APIs (TeleportService, MarketplaceService, DataStoreService, Players:IsFriendsWith).
+- Report actual changes, tests and blockers; never claim work that wasn't done.
+- Open owner decisions are listed in _Reference_Info/OWNER_DECISIONS_PENDING.txt.
+- Diagrams 06 and 07 still show the earlier 24-stud depth, 90 x 90 lobby and one-place wording. The written values above win.

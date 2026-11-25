@@ -1,0 +1,87 @@
+Implement phase 07: ten tool behaviors, permanent upgrades, fixed exchange and optional Robux alternatives.
+
+TOOL BEHAVIORS
+1 Ticket Grabber: one exposed ticket. 2 Dustpan Scoop: small exposed cluster. 3 Hand Rake: narrow shallow strip. 4 Push Broom: wide shallow path. 5 Shovel: small footprint through layers in order. 6 Handheld Vacuum: continuous nearby exposed collection. 7 Leaf Blower: bounded surface displacement, no collection payout. 8 Shop Vac: longer-range successive-layer collection. 9 Rotary Sweeper: wide lane while walking. 10 Ride-on Ticket Vacuum: collection along a driven path.
+Reuse the genuine Blender meshes and one validation/collection pipeline. Gold is manually claimed, never auto-collected. Stop actions on release, unequip, climb, death, full bag, range exit, teleport or disconnect. No persistent vehicle transforms.
+Ride-on owners near the pit-floor pad can equip one machine, with server validation, safe spawn, touch steering and dismount. Recall/remove machines safely before their character climbs. Do not obstruct ladders or duplicate equipment.
+
+PERSISTENT UPGRADES
+Restore Movement Speed, Dig Speed, Reach, Carry Capacity and Scratch Speed as permanent saved levels. Define base values, units, level effects, caps and costs in central configuration; mark initial tuning as untested. Combine upgrades with tool base stats consistently. Dig Speed affects rate, not bypassing covered tickets; Reach stays within allowed server ranges; Carry Capacity affects ordinary bag only; Scratch Speed affects artwork reveal, not a cash reward. Switching tools preserves upgrade levels. Lower effective capacity must not destroy held tickets; block collection until the bag is below capacity.
+Show current/next effect and both purchase options. Money and owned tools/upgrade levels share one authoritative profile. Earned-money transactions atomically debit money and grant the tool or level once; reject invalid prerequisites, ownership, caps and replayed requests.
+
+ROBUX PURCHASE CONTRACT — FIXED, KNOWN BENEFITS
+Money packs grant a specified fixed Money amount. Each tool and upgrade offer has an optional direct Robux alternative to its earned-money route. Both routes grant the same permanent result, not two inventory copies. No paid random reward or special gold chance.
+Proposed implementation: developer products mapped to immutable configured offers. A tool product grants its named tool. An upgrade product grants a named category at a specific target level (max(current, target)); its displayed offer explicitly includes lower levels if needed. Do not use an ambiguous 'next upgrade' product whose meaning changes before receipt delivery. In-game money can buy the next level normally; its quoted cost/result must be explicit.
+Product IDs, Robux prices, money-pack amounts, upgrade caps and tuning are pending setup. Keep paid buttons disabled until configured. Never invent real product IDs or silently change the promised benefit of an existing product ID. Display a current platform price; if unavailable, show unavailable rather than a made-up number. Roblox's purchase confirmation is the final price display.
+No receipt relies on an in-memory selected item or a still-open shop UI. ProductId alone maps to the durable offer. Selling a product externally must have the same defined fulfillment as buying in game.
+
+REPEAT PURCHASES / RACES
+Developer products can be purchased again. Hide in-game buy actions for already-owned tools/attained target levels and prevent concurrent money/Robux shop actions while a prompt is pending, but do not treat UI gating as a guarantee. Rejoins, delayed receipts and external sales still need handling.
+Before enabling each tool/upgrade product, configure and disclose a deterministic duplicate-ownership fallback: a fixed in-game Money amount. The offer text must say what is received if the entitlement already exists. The owner sets that amount; do not invent it. If fallback is unset, do not enable that product's sales. A NEW paid PurchaseId gets either the entitlement or the advertised fallback exactly once. Re-delivery of the SAME PurchaseId gets nothing additional. Serialize cash purchases and receipt grants to avoid lost updates.
+Use this explicit product policy consistently. If a different ownership product is later selected, review its current official API rules and rewrite the catalog/fulfillment coherently; do not mix purchase models ad hoc.
+
+RECEIPTS
+Two places: the Gameplay place owns profiles and fulfills every developer product. The Lobby place sets its own ProcessReceipt that always answers NotProcessedYet, so purchases are never auto-acknowledged there and resolve when the player next enters a gameplay server. Shops and paid buttons exist only in the Gameplay place.
+Use one server-side MarketplaceService.ProcessReceipt dispatcher for developer products, mapped by verified ProductId. Do not grant based on a client callback or PromptProductPurchaseFinished. Persist the benefit and PurchaseId deduplication record safely through the existing profile pipeline before acknowledging PurchaseGranted. Missing writable data, unknown products or failed durable grants remain NotProcessedYet with diagnostic visibility. Retain handlers for previously sold products. Official references: https://create.roblox.com/docs/production/monetization/developer-products and https://create.roblox.com/docs/reference/engine/classes/MarketplaceService#ProcessReceipt . Additional context is in _Reference_Info/ROBLOX_PURCHASE_REFERENCES.txt.
+Implementation requirement: receipt processing and ordinary profile saving must not overwrite each other. Keep update callbacks free of external side effects. Avoid a 'receipt marked complete before benefit' gap, and a 'benefit granted without receipt persisted' gap. Use atomic profile-level grants or a proven recoverable transaction protocol. Technical receipt storage is permitted; pit state is not. Do not prune deduplication IDs unsafely; document bounded-storage strategy before release.
+
+EXCHANGE / INSPECTION
+Runtime ticket bag uses bounded data and about 20 shared-geometry variants. Exchange shows an exact fixed value, consumes tickets and adds Money once. Inspection reveals printed artwork by touch/hold, never random payout or extra tickets. Bag/inspection state do not persist; respawn preserves them within the connection. Display: 'Exchange before leaving. Money, tools and upgrades save; tickets do not.' At the post-gold LEAVE / RETURN TO LOBBY choice, the server auto-exchanges the unexchanged bag once at the fixed value before acting (owner decision).
+
+DONE WHEN
+Test all tools/upgrades and both payment routes using controlled tests: repeat money request, cancelled prompt, duplicate same receipt, two distinct receipts, delayed receipt after another acquisition, target already exceeded, unknown ProductId, disconnect, failed save, concurrent delivery and retry. Assert fixed grant/fallback once, unchanged pit state and restored upgrade effects after rejoin. Real purchase testing and product setup must be labeled pending if not performed. Do not spend real Robux merely to satisfy this prompt without the owner's explicit test instruction.
+
+CURRENT CONTRACT (v6 + owner changes, updated 2026-11-25) — applies to every phase
+This replaces the earlier "V6 FINAL CONTRACT" wherever the two differ. The change log is in GamePrompts/OWNER_CHANGES.md.
+
+PLACES
+TWO Roblox places in one universe (10779008507).
+LOBBY place = the start place "Lottery-Game" (id 126779117472575), server size 16. It is the social hub where parties form. It has no shops or economy, and it never claims or saves player profiles.
+GAMEPLAY place = "gameplay" (id 81218982278176), server size 4. Each party gets one reserved (private) server. Players who arrive any other way are sent back to the Lobby.
+
+GAMEPLAY MAP
+ONE continuous indoor map per gameplay server: the back stockroom of a ticket store. Solid perimeter walls and a complete high roof enclose BOTH zones, which adjoin directly with open internal access and no divider:
+- the smaller in-map lobby on the LEFT, with spawn and the TOOLS, UPGRADES, EXCHANGE and INSPECT counters
+- the much larger ticket pit on the RIGHT
+
+Dimensions (studs; adjustable after playtests):
+- Pit opening 100 x 160 (X 0..100, Z -80..80), flat structural bottom 40.8 below the rim (1.7x the original 24).
+- In-map lobby 120 x 120 (X -130..-10, Z -60..60).
+- Rim walkway 10 wide.
+- Roof underside 28 above the rim.
+- Two full-height yellow ladders on the lobby-facing (west) pit wall, at Z -24 and +24, are the normal way back up.
+
+PARTIES (Lobby place)
+- Walking into a free party circle creates a party, and that player becomes the leader.
+- The leader picks FRIENDS (only the leader's Roblox friends may join) or PUBLIC (anyone may join), and a max size of 1, 2, 3 or 4. The leader can change both while waiting.
+- Others join by walking into the circle if the privacy setting allows it and there is room.
+- Only the leader sees the START button. A 30-second countdown starts when the party is created and restarts from 30 whenever a member joins or the leader changes a setting; if it reaches 0, the party teleports automatically.
+- The whole party travels together to a fresh reserved gameplay server.
+
+HUNT
+- ONE shared ticket pile per gameplay server. Each player who joins the server adds a batch of tickets; leaving never removes tickets.
+- One hidden golden ticket per hunt.
+- There is NO Return-to-Lobby button during the hunt; to go back early, a player leaves the game.
+- When the golden ticket is found, every player in that server gets exactly two options: LEAVE (exit the game) or RETURN TO LOBBY (teleport to the Lobby place). These options appear ONLY after the golden ticket is found.
+
+SAVING
+- Save Money, OwnedToolIds and UpgradeLevels per player. Only the Gameplay place owns and writes profiles (session-locked).
+- Never persist pit state.
+- Bag, inspection, equipped selection, vehicle transforms and discovery counts are session-only.
+- Schema, lock and purchase-receipt metadata may be persisted for reliability.
+
+MONEY AND PURCHASES
+- Earn money by fixed-value ticket exchange, or buy fixed Money packs with Robux.
+- Each tool and permanent upgrade has an earned-money route and an optional direct Robux route to the same benefit. Robux purchases are fulfilled in the Gameplay place.
+- The Lobby place must still set ProcessReceipt and answer NotProcessedYet, so no purchase is ever auto-acknowledged there.
+- Product IDs, prices, amounts and balance are owner configuration. Never invent IDs or enable an unconfigured paid button.
+
+GOLDEN REWARD
+The golden-ticket finder receives a special reward in the final game. The exact reward is deliberately TBD. Keep a disabled, server-only finder-reward hook with honest development feedback.
+
+WORKING RULES
+- Inspect existing work, preserve valid assets, and implement only the current phase.
+- Use concise, server-authoritative Luau. Consult current official Roblox docs for platform APIs (TeleportService, MarketplaceService, DataStoreService, Players:IsFriendsWith).
+- Report actual changes, tests and blockers; never claim work that wasn't done.
+- Open owner decisions are listed in _Reference_Info/OWNER_DECISIONS_PENDING.txt.
+- Diagrams 06 and 07 still show the earlier 24-stud depth, 90 x 90 lobby and one-place wording. The written values above win.

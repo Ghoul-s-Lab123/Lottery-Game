@@ -1,0 +1,99 @@
+FIND THE WINNING LOTTERY — CONTEXT (v6 + owner changes, 2026-11-25)
+Build a low-poly Roblox collectible-ticket treasure hunt. This is a prompt pack for phased implementation. Follow the phases in order, with this file as shared context. Read GamePrompts/OWNER_CHANGES.md before each phase.
+Keep the existing title unless the owner requests a rename.
+Game loop:
+1. Meet in the Lobby place and form a party.
+2. Travel together to a private gameplay server.
+3. Collect tickets, inspect their artwork, and exchange them for fixed in-game money.
+4. Buy tools and upgrades.
+5. Uncover the golden ticket and run the finder-reward hook.
+6. Choose LEAVE or RETURN TO LOBBY.
+Robux purchases are optional fixed benefits. No wagers, paid random outcomes or real-money redemption.
+
+PHASE ORDER
+01 Foundation and data contract (Gameplay place). DONE: data layer and blockout exist in the start place and must be moved to the Gameplay place at the start of the next phase.
+02 Movement, respawn and ladders inside the gameplay map.
+02B Lobby place, parties and party travel (reserved servers), plus the post-gold Leave / Return options.
+03 Blender tickets and ten tools; the original modeling requirements are kept.
+04 In-map lobby with shops, spawn and views into the pit (Gameplay place).
+05 Shared pile, player-scaled tickets, concurrency, discovery and hunt end.
+06 Final large pit geometry, ladders and equipment pad.
+07 Tool mechanics, persistent upgrades, dual-currency purchases, exchange and inspection.
+08 UI (Lobby party UI + gameplay HUD/shops), money/tools/upgrades persistence and Robux receipt integration.
+09 End-to-end QA and optimization across both places.
+
+REFERENCE LIMIT
+- The provided layout sketch is authoritative for the adjacency of the in-map lobby and the pit.
+- TikTok could not be inspected because it showed an access gate; do not claim any exact video details.
+- Measurements are proposed defaults. Solid walls and a full roof are required. Keep the map simple.
+- Diagrams 06 and 07 show the older 24-stud depth and 90 x 90 lobby; the written values win.
+- Do not add back persistent inventories, lifetime discoveries, or days/playtime boards.
+- Any session-only scoreboard must clearly say THIS SERVER and must not write to an ordered DataStore.
+
+FINAL DESIGN DECISIONS
+Read _Reference_Info/OWNER_DECISIONS_PENDING.txt.
+Required:
+- the two-place structure (Lobby 16, Gameplay 4)
+- party circles with FRIENDS/PUBLIC privacy and a 1–4 size
+- leader START plus the 30-second auto-start
+- the indoor stockroom map with ladders
+- the player-scaled shared pit
+- Leave / Return to Lobby only after gold
+- permanent upgrades
+- optional fixed Robux purchases
+The exact special finder reward and commercial catalog values are deliberately pending. Build every phase now with explicit disabled configuration rather than inventing those values or stopping the whole project. Resolve them before public release or paid sales.
+
+CURRENT CONTRACT (v6 + owner changes, updated 2026-11-25) — applies to every phase
+This replaces the earlier "V6 FINAL CONTRACT" wherever the two differ. The change log is in GamePrompts/OWNER_CHANGES.md.
+
+PLACES
+TWO Roblox places in one universe (10779008507).
+LOBBY place = the start place "Lottery-Game" (id 126779117472575), server size 16. It is the social hub where parties form. It has no shops or economy, and it never claims or saves player profiles.
+GAMEPLAY place = "gameplay" (id 81218982278176), server size 4. Each party gets one reserved (private) server. Players who arrive any other way are sent back to the Lobby.
+
+GAMEPLAY MAP
+ONE continuous indoor map per gameplay server: the back stockroom of a ticket store. Solid perimeter walls and a complete high roof enclose BOTH zones, which adjoin directly with open internal access and no divider:
+- the smaller in-map lobby on the LEFT, with spawn and the TOOLS, UPGRADES, EXCHANGE and INSPECT counters
+- the much larger ticket pit on the RIGHT
+
+Dimensions (studs; adjustable after playtests):
+- Pit opening 100 x 160 (X 0..100, Z -80..80), flat structural bottom 40.8 below the rim (1.7x the original 24).
+- In-map lobby 120 x 120 (X -130..-10, Z -60..60).
+- Rim walkway 10 wide.
+- Roof underside 28 above the rim.
+- Two full-height yellow ladders on the lobby-facing (west) pit wall, at Z -24 and +24, are the normal way back up.
+
+PARTIES (Lobby place)
+- Walking into a free party circle creates a party, and that player becomes the leader.
+- The leader picks FRIENDS (only the leader's Roblox friends may join) or PUBLIC (anyone may join), and a max size of 1, 2, 3 or 4. The leader can change both while waiting.
+- Others join by walking into the circle if the privacy setting allows it and there is room.
+- Only the leader sees the START button. A 30-second countdown starts when the party is created and restarts from 30 whenever a member joins or the leader changes a setting; if it reaches 0, the party teleports automatically.
+- The whole party travels together to a fresh reserved gameplay server.
+
+HUNT
+- ONE shared ticket pile per gameplay server. Each player who joins the server adds a batch of tickets; leaving never removes tickets.
+- One hidden golden ticket per hunt.
+- There is NO Return-to-Lobby button during the hunt; to go back early, a player leaves the game.
+- When the golden ticket is found, every player in that server gets exactly two options: LEAVE (exit the game) or RETURN TO LOBBY (teleport to the Lobby place). These options appear ONLY after the golden ticket is found.
+
+SAVING
+- Save Money, OwnedToolIds and UpgradeLevels per player. Only the Gameplay place owns and writes profiles (session-locked).
+- Never persist pit state.
+- Bag, inspection, equipped selection, vehicle transforms and discovery counts are session-only.
+- Schema, lock and purchase-receipt metadata may be persisted for reliability.
+
+MONEY AND PURCHASES
+- Earn money by fixed-value ticket exchange, or buy fixed Money packs with Robux.
+- Each tool and permanent upgrade has an earned-money route and an optional direct Robux route to the same benefit. Robux purchases are fulfilled in the Gameplay place.
+- The Lobby place must still set ProcessReceipt and answer NotProcessedYet, so no purchase is ever auto-acknowledged there.
+- Product IDs, prices, amounts and balance are owner configuration. Never invent IDs or enable an unconfigured paid button.
+
+GOLDEN REWARD
+The golden-ticket finder receives a special reward in the final game. The exact reward is deliberately TBD. Keep a disabled, server-only finder-reward hook with honest development feedback.
+
+WORKING RULES
+- Inspect existing work, preserve valid assets, and implement only the current phase.
+- Use concise, server-authoritative Luau. Consult current official Roblox docs for platform APIs (TeleportService, MarketplaceService, DataStoreService, Players:IsFriendsWith).
+- Report actual changes, tests and blockers; never claim work that wasn't done.
+- Open owner decisions are listed in _Reference_Info/OWNER_DECISIONS_PENDING.txt.
+- Diagrams 06 and 07 still show the earlier 24-stud depth, 90 x 90 lobby and one-place wording. The written values above win.

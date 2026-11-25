@@ -1,0 +1,2 @@
+# Prompt-pack handoff zips duplicate GamePrompts/ and go stale; the folder is the source.
+GamePrompts/*.zip

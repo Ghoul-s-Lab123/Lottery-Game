@@ -1,0 +1,118 @@
+Implement phase 05: shared ticket layers scaled by players, manual golden discovery, the future finder-reward hook and hunt end.
+
+SHARED PILE
+One authoritative pile for all connected ready players in the party's gameplay server. No personal plots or individual excavation state.
+
+Ticket count (owner rule):
+- The pile starts with a base batch.
+- Each player who joins the server adds one more batch to the surface, kept clear of ladder landings, the floor route and the equipment pad.
+- Leaving NEVER removes tickets.
+- A join batch never moves, covers or re-hides the golden ticket. Use bounded insertion, not regeneration.
+- Base batch, per-player batch and the maximum are TEST tuning in central configuration. The fill height can rise with the batches, but stays below the rim.
+
+Rendering and sync:
+- Render bounded exposed/near-surface tickets, not every logical layer or a loose physics pile.
+- Version snapshots and deltas; late arrivals see the current state.
+
+Server validation:
+- Check profile readiness, current hunt/target, exposure, range, an equipped owned tool, upgrade-derived limits, cooldown, finite request values, bag capacity and rate.
+- The client supplies intent only, never prices, reward values or trusted removed-ID lists.
+
+Collection:
+- Consume an ordinary ticket and add it to one collector's runtime bag atomically. Full bags leave tickets untouched.
+- Process successive exposed layers in order.
+- Leaf Blower displacement changes exposure without paying a reward.
+
+GOLD AND FINDER IDENTITY
+- One hidden golden ticket per hunt.
+- A genuinely exposed corner can be claimed within range after server exposure checks.
+- Tools cannot auto-collect, destroy or pay for gold. A manual claim does not require spare bag capacity.
+- Transition Active to Resolved atomically. Exactly one valid manual claimant becomes the finder. Capture that user ID and a unique runtime claim key from server identity + hunt.
+- Simultaneous, duplicate or stale claims cannot produce another finder or another resolution.
+- Announce the finder to the server. An optional session discovery count belongs to that finder only; it is not persistent and is not the promised special reward.
+- Do not give the special reward to all helpers or let another player take it after a disconnect.
+
+SPECIAL REWARD — DELIBERATELY TBD
+- Expose one server-only reward integration point that accepts the verified finder and claim key.
+- Its configuration is unset/disabled initially. Do not guess money, a tool, badge, upgrade, collectible, odds or quantity.
+- Do not advertise a tangible prize, show fake 'reward granted' feedback, or store unapproved future entitlements.
+- In development, display 'Golden ticket found — special reward not configured yet.'
+- Before public release, the owner chooses the reward and its persistence/eligibility. Implement it through the existing grant/profile pipeline with idempotency and failure recovery.
+- A disconnect after the claim must not redirect a configured reward to another player.
+- Do not mark an enabled reward granted before its actual durable grant; retry transient failures without duplication.
+- Do not add paid golden-ticket rolls, gold-claim purchases, purchasable special-reward odds or a cash-out system.
+
+HUNT END (owner rule; replaces the v6 automatic refill)
+- When gold resolves and the reward hook has run (disabled in development), show every player in the server exactly two options: LEAVE or RETURN TO LOBBY (phase 02B handles the actions).
+- These options never appear before gold is found.
+- There is no automatic new pile in the same server.
+- While the options are shown, players may keep collecting and exchanging the leftover ordinary tickets (owner decision). No new gold appears and there is no refill.
+- No timer-only resets, and no resets on join, leave, respawn, purchases, exchange or ladder use.
+- Never persist ticket layers, seed, depletion, gold location, hunt state or remaining work.
+
+PERFORMANCE / VERIFICATION
+- Centralized selection/updates, capped anchored visual meshes, a lightweight collision surface, and no per-ticket scripts.
+- Avoid isolated deep cells that trap players; keep routes toward the ladder landings traversable.
+Test and report:
+- contested ordinary tickets and full bag
+- covered gold, two gold claims at once, finder identity
+- truthful disabled-hook text, duplicate requests
+- late arrival adding a batch without moving gold
+- leaving not removing tickets
+- hunt-end options appearing only after gold
+Mock the future hook to test success, failure and retry without awarding an invented live prize. Confirm no pit persistence. Report actual tests, and report the reward definition as pending owner design.
+
+CURRENT CONTRACT (v6 + owner changes, updated 2026-11-25) — applies to every phase
+This replaces the earlier "V6 FINAL CONTRACT" wherever the two differ. The change log is in GamePrompts/OWNER_CHANGES.md.
+
+PLACES
+TWO Roblox places in one universe (10779008507).
+LOBBY place = the start place "Lottery-Game" (id 126779117472575), server size 16. It is the social hub where parties form. It has no shops or economy, and it never claims or saves player profiles.
+GAMEPLAY place = "gameplay" (id 81218982278176), server size 4. Each party gets one reserved (private) server. Players who arrive any other way are sent back to the Lobby.
+
+GAMEPLAY MAP
+ONE continuous indoor map per gameplay server: the back stockroom of a ticket store. Solid perimeter walls and a complete high roof enclose BOTH zones, which adjoin directly with open internal access and no divider:
+- the smaller in-map lobby on the LEFT, with spawn and the TOOLS, UPGRADES, EXCHANGE and INSPECT counters
+- the much larger ticket pit on the RIGHT
+
+Dimensions (studs; adjustable after playtests):
+- Pit opening 100 x 160 (X 0..100, Z -80..80), flat structural bottom 40.8 below the rim (1.7x the original 24).
+- In-map lobby 120 x 120 (X -130..-10, Z -60..60).
+- Rim walkway 10 wide.
+- Roof underside 28 above the rim.
+- Two full-height yellow ladders on the lobby-facing (west) pit wall, at Z -24 and +24, are the normal way back up.
+
+PARTIES (Lobby place)
+- Walking into a free party circle creates a party, and that player becomes the leader.
+- The leader picks FRIENDS (only the leader's Roblox friends may join) or PUBLIC (anyone may join), and a max size of 1, 2, 3 or 4. The leader can change both while waiting.
+- Others join by walking into the circle if the privacy setting allows it and there is room.
+- Only the leader sees the START button. A 30-second countdown starts when the party is created and restarts from 30 whenever a member joins or the leader changes a setting; if it reaches 0, the party teleports automatically.
+- The whole party travels together to a fresh reserved gameplay server.
+
+HUNT
+- ONE shared ticket pile per gameplay server. Each player who joins the server adds a batch of tickets; leaving never removes tickets.
+- One hidden golden ticket per hunt.
+- There is NO Return-to-Lobby button during the hunt; to go back early, a player leaves the game.
+- When the golden ticket is found, every player in that server gets exactly two options: LEAVE (exit the game) or RETURN TO LOBBY (teleport to the Lobby place). These options appear ONLY after the golden ticket is found.
+
+SAVING
+- Save Money, OwnedToolIds and UpgradeLevels per player. Only the Gameplay place owns and writes profiles (session-locked).
+- Never persist pit state.
+- Bag, inspection, equipped selection, vehicle transforms and discovery counts are session-only.
+- Schema, lock and purchase-receipt metadata may be persisted for reliability.
+
+MONEY AND PURCHASES
+- Earn money by fixed-value ticket exchange, or buy fixed Money packs with Robux.
+- Each tool and permanent upgrade has an earned-money route and an optional direct Robux route to the same benefit. Robux purchases are fulfilled in the Gameplay place.
+- The Lobby place must still set ProcessReceipt and answer NotProcessedYet, so no purchase is ever auto-acknowledged there.
+- Product IDs, prices, amounts and balance are owner configuration. Never invent IDs or enable an unconfigured paid button.
+
+GOLDEN REWARD
+The golden-ticket finder receives a special reward in the final game. The exact reward is deliberately TBD. Keep a disabled, server-only finder-reward hook with honest development feedback.
+
+WORKING RULES
+- Inspect existing work, preserve valid assets, and implement only the current phase.
+- Use concise, server-authoritative Luau. Consult current official Roblox docs for platform APIs (TeleportService, MarketplaceService, DataStoreService, Players:IsFriendsWith).
+- Report actual changes, tests and blockers; never claim work that wasn't done.
+- Open owner decisions are listed in _Reference_Info/OWNER_DECISIONS_PENDING.txt.
+- Diagrams 06 and 07 still show the earlier 24-stud depth, 90 x 90 lobby and one-place wording. The written values above win.

@@ -1,0 +1,37 @@
+MAP REFERENCE NOTES (v6 + owner changes, 2026-11-25)
+
+LAYOUT
+- Two places. These notes describe the GAMEPLAY place map. The Lobby place (party hub) has no reference image yet.
+- One enclosed ticket-store stockroom contains BOTH gameplay zones: the smaller in-map lobby (shops) on the LEFT, adjoining the larger rectangular ticket pit on the RIGHT.
+- One room with an open internal connection, solid perimeter walls and a complete roof, with shelves and ticket-stock cartons along the walls. No exterior lobby or roofless courtyard.
+
+WHICH SOURCE CONTROLS WHAT
+- The top-down plan controls adjacency (the roof is hidden in that drawing only).
+- The section controls the roof idea.
+- The concept image controls atmosphere; it is not to scale.
+
+CURRENT DIMENSIONS (studs, override the diagrams)
+- Pit 100 x 160, bottom 40.8 below the rim (diagrams still show 24).
+- In-map lobby 120 x 120 (diagram shows 90 x 90).
+- Rim 10 wide.
+- Roof underside 28 above the rim.
+
+LADDERS AND CLEAR AREAS
+- Two yellow ladders reach full bottom-to-rim height along the lobby-facing wall.
+- Keep the 8 x 8 lower landings, the floor route and the 16 x 16 equipment pad free of tickets at every fill level.
+- Do not turn the pit into a floor-level mound, shaft, table, stairs or separate plots.
+
+FILL AND TICKETS
+- The fill height grows with the number of players who joined (phase 05). The flat structural bottom is Y=-40.8.
+- All tickets are thin paper meshes with printed art, not thick embossed tiles.
+
+ASSETS
+- The original tool sheets control all ten tools. Incidental concept hammers, wrenches and NPCs are not asset requirements.
+- Keep decorative detail optimized, signs modest and roof lights sparse.
+
+TESTING
+- Use the written contract and measured diagrams over incidental render details.
+- Test ceiling/camera, pit collision, ladders, driving and gold readability in Studio. Concept images do not prove geometry budgets or performance.
+
+VIDEO
+The video was not viewed: TikTok showed a login/birthdate gate. No exact unseen video geometry is claimed.

@@ -1,0 +1,27 @@
+OWNER DECISIONS (updated 2026-11-25)
+
+DECIDED (2026-11-25)
+- Leader walks out of the circle or disconnects before travel: the party is disbanded and every member is removed from it.
+- The 30-second auto-start countdown RESTARTS from 30 whenever a member joins or the leader changes privacy or size.
+- The Lobby place has 6 party circles.
+- After the golden ticket is found, players may keep collecting and exchanging the leftover ordinary tickets while the LEAVE / RETURN TO LOBBY options are shown. No new gold and no refill.
+- Choosing LEAVE or RETURN TO LOBBY auto-exchanges the unexchanged bag once at the fixed value. A plain disconnect still loses an unexchanged bag.
+- A disconnected player cannot rejoin the party's gameplay server; they land in the Lobby.
+
+STILL PENDING — may stay pending during development
+1. Golden-ticket finder's exact special reward: type, quantity/value, and whether and how it persists.
+   - The hook stays disabled, with honest development feedback. No future entitlement is promised.
+   - Decide and implement before public release.
+2. Earned-money prices, upgrade level caps/effects and economy balance.
+   - Use clearly labeled test configuration until approved.
+3. Robux setup values: product IDs, prices, fixed money-pack amounts, named tool/upgrade target offers, and disclosed duplicate-ownership fallback amounts.
+   - These are setup values, not permission to invent working product IDs.
+   - Paid options remain disabled until correctly configured and fulfillment is tested.
+4. Real-device and published purchase/teleport tests: report only the tests actually performed.
+   - The prompt pack does not authorize spending real Robux automatically.
+5. Visual design of the Lobby place.
+   - No reference image yet; build a simple blockout in the stockroom color style.
+6. Ticket batch sizes: base pile, per-joining-player batch, and maximum.
+   - TEST values are set in phase 05.
+
+The pending values do not block building the places, map, assets, tools, UI, persistence, receipt dispatcher or mock tests. Claude should proceed phase by phase and name the specific manual configuration when it becomes relevant.

@@ -1,0 +1,8 @@
+V6 FINAL CHANGE LOG
+Inputs: user-supplied v4 archive, inspected layout sketch, v5 pack and final user revision requesting an enclosed ticket-store storage room, finder special reward TBD and Robux alternatives for money/tools/upgrades.
+Preserved: one-place adjacent layout; large moderate-depth ticket pit; ladders; ten Blender tool references and budgets; shared ticket state; exchange/inspection; no pit persistence.
+Changed: full walls/roof over BOTH zones; new indoor concept and updated diagrams; permanent UpgradeLevels restored alongside Money/OwnedToolIds; fixed optional Robux catalog and receipt handling; finder-only future special reward hook; purchase and ceiling QA; honest pending setup checklist for Claude handoff.
+All final numbered prompts contain the v6 contract. Legacy two-place/open-air/no-upgrades rules are superseded and not active requirements.
+Original four ticket/tool reference images retained byte-for-byte. New concept generated with built-in imagegen; diagrams regenerated from source with Pillow. No game, Blender files, player data or paid products were modified during pack creation.
+TikTok URL: https://www.tiktok.com/@jayify/video/7711869565856124182?lang=en
+Video not inspected: browser access required login/birthdate. Layout is based on the supplied sketch and written revisions.

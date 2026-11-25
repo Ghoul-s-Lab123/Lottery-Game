@@ -1,0 +1,47 @@
+DESIGN UPDATE — TWO PLACES (2026-11-25)
+
+PRESERVE AND MIGRATE
+- Preserve valid work and migrate to TWO places in one universe.
+- LOBBY (start place, 16) is the party hub.
+- GAMEPLAY (4, reserved server per party) is the enclosed ticket-store stockroom: in-map lobby with shops on the LEFT, big ticket pit on the RIGHT (100 x 160, 40.8 deep), solid walls and a complete roof over both, and two full-height ladders.
+- Work built in the start place before this change (data layer, configuration, blockout) must be moved into the Gameplay place. The start place then becomes the Lobby hub.
+- Do not delete or unpublish places.
+
+KEEP
+- Ten Blender tools, shared authoritative ticket layers, fixed exchange, inspection and working validation.
+- The ticket/tool sheets and asset budgets.
+
+SAVING
+- Persist Money, OwnedToolIds and UpgradeLevels, owned and written only by the Gameplay place.
+- Preserve validated legacy cash, tools and upgrades; initialize only missing levels.
+- Never overwrite old progress on a failed load.
+- Test migration on copied data. Do not destructively purge records.
+
+PARTIES
+- Circle-based parties: FRIENDS or PUBLIC, max size 1–4.
+- Leader-only START, plus a 30-second auto-start from party creation.
+- The whole party teleports to a fresh reserved gameplay server.
+
+HUNT
+- Each joining player adds tickets; leaving removes none.
+- No Return-to-Lobby during the hunt. After the golden ticket is found: LEAVE or RETURN TO LOBBY.
+
+PURCHASES
+- Optional fixed Robux money packs, and direct Robux alternatives for tools and upgrades; earned-money purchases remain available.
+- Both routes use the same server grant logic, fulfilled in the Gameplay place. The Lobby's ProcessReceipt answers NotProcessedYet.
+- Product IDs, prices and benefits must be configured and tested before paid buttons are enabled.
+- Persist purchase-receipt metadata to avoid duplicate grants, but never save pit state.
+
+GOLDEN TICKET
+- The finder will receive a special reward; the exact prize is TBD.
+- Finder-only reward hook, disabled in development.
+- No invented prize, paid gold boost or future redemption promise.
+
+SESSION-ONLY
+- Pit layout, removed tickets, depth, gold location and progress are never persistent.
+- Ordinary bags and inspection state remain session-only.
+
+REPORT
+- Read all affected phases, then make the smallest consistent migration.
+- Report preserved systems, implemented changes, test evidence and pending configuration.
+- No live purchases, publication or destructive data actions are requested.

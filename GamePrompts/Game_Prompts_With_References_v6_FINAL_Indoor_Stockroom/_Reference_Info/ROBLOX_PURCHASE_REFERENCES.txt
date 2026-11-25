@@ -1,0 +1,11 @@
+OFFICIAL IMPLEMENTATION REFERENCES — checked November 25, 2026
+Developer products:
+https://create.roblox.com/docs/production/monetization/developer-products
+MarketplaceService / ProcessReceipt:
+https://create.roblox.com/docs/reference/engine/classes/MarketplaceService#ProcessReceipt
+Passes (only if the purchase design is intentionally changed later):
+https://create.roblox.com/docs/production/monetization/passes
+
+Verified platform guidance: developer products are repeat-purchasable. Fulfill them through the server receipt handler, not PromptProductPurchaseFinished. Use the receipt's product/player/purchase identity; acknowledge a successful grant, and leave unresolved receipts pending when fulfillment is unavailable. Re-check official documentation at implementation time.
+The catalog choices, fixed target-level offers, duplicate-ownership Money fallback, explicit save whitelist and disabled unconfigured offers are this game's proposed implementation requirements, not Roblox-mandated economy rules. Product values remain owner configuration.
+Do not replace a robust durable grant design with a client-side purchase success flag. Do not claim monetization is live or tested just because the prompt pack includes these references.

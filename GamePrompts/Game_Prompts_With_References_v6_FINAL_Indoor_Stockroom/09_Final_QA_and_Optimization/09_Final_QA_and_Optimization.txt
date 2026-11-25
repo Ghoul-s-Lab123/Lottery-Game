@@ -1,0 +1,122 @@
+Implement phase 09: verify the completed two-place game without adding new systems.
+
+FLOW CHECK (both places)
+Lobby place (start place, 16):
+- Join; create a party in a circle; FRIENDS vs PUBLIC join rules; max size 1–4 (never below the member count).
+- Leader-only START; 30-second auto-start that restarts on a join or settings change; the leader walking out or disconnecting disbands the party; members can leave freely.
+- The whole party travels to a fresh reserved Gameplay server.
+- A direct join to the Gameplay place is bounced to the Lobby.
+Gameplay place (4):
+- Walk from spawn to the pit, collect, climb a ladder, exchange and buy a tool.
+- No Return-to-Lobby button during the hunt.
+- After gold, exactly two options appear: LEAVE and RETURN TO LOBBY. Both work, and the returned player can form a new party.
+
+MAP CHECK (Gameplay place)
+- The in-map lobby (120 x 120) and the larger pit (100 x 160 x 40.8 deep) sit under the same complete roof, inside solid enclosing walls.
+- Verify the actual proportions.
+- Both ladders reach from bottom to rim and stay usable at every fill level (1–4 player piles, partial, empty).
+- No permanent stairs, vehicle ramp, portal or separate hunt room.
+- Verify camera, collision, floor clearance, pad spawn/recall, safe dismount, two simultaneous climbers and four-player congestion.
+
+SAVE SCOPE CHECK
+- Inspect the explicit serialized fields: money, owned tools and upgrade levels plus essential technical metadata.
+- No inventory, lifetime stats, pit seed/layout/depletion or vehicle state is saved anywhere.
+- Only the Gameplay place claims and saves profiles; the Lobby never takes a lease.
+- Test: purchase/exchange persistence; Lobby -> Gameplay -> Lobby handoff (no load failures from leases); leave/rejoin; failed load without overwrite; failed save; concurrent ownership; legacy migration on isolated data.
+- Session-only bag/discoveries clear on disconnect and survive character respawn.
+
+GAMEPLAY CHECK
+- Test every tool, overlapping collection, exposure rejection, full bags, no-op/effective blowing, manual gold claims, simultaneous gold clicks, finder identity rules and stale requests.
+- One ordinary ticket awards one collector, and one gold claim resolves once.
+- The finder gets one session-only discovery, and the disabled special-reward hook is reported honestly.
+- Each joining player adds a ticket batch without moving gold; leaving removes nothing.
+- No accidental resets from shop visits, deaths or ladders.
+- Confirm tool purchases cannot double-spend, exchange cannot pay twice, and inspection does not increase money.
+- Client input cannot set rewards, arbitrary ownership, target lists, party leader or teleport targets.
+- Validate types, lengths, finite values, distance, cooldown, ownership and rate bounds.
+
+PERFORMANCE CHECK
+- Record device/environment, player count (Lobby up to 16, Gameplay up to 4), active visual tickets, total instances, representative frame times and memory.
+- Profile repeated collections and full hunts for leaks.
+- No individual ticket scripts or unbounded physical ticket piles.
+- Separate desktop/emulator results from real mobile performance.
+- Measure actual exported/imported triangles, including all components/modifiers, against the phase-03 budgets.
+- Verify grip positions, scale, flat ticket art, tool silhouettes, readable gold at 40.8-stud depth, and material reuse.
+
+RELEASE REPORT
+- List fixed blockers, actual tests and environments, measured results, remaining defects and exact manual setup.
+- Teleport and real-purchase tests that Studio cannot run must be labeled as published-test results or pending.
+- Do not claim a finished production game, or proven performance based on concept images.
+- Provide limited-playtest readiness only when evidence supports it.
+- Preserve valid Blender sources, exports and working project code.
+
+FINAL ACCEPTANCE — INDOOR / PARTIES / REWARDS / PURCHASES
+- Solid walls, a complete roof and usable camera clearance over both gameplay zones; lighting cost and gold visibility checked.
+- Party rules exactly as specified; the post-gold options appear only after gold.
+- Finder special reward: valid claimant only, one hook invocation per hunt, no duplicated resolution, honest disabled-state text. The real reward is still an owner decision; label it unfinished before any public release.
+- Verify all five saved upgrades across tool changes, rejoin and place travel.
+- Purchase tests:
+  - money-pack receipt, direct tool purchase and a fixed upgrade-target product
+  - cancellation; the same receipt repeated; a distinct purchase when already owned
+  - a pending grant after disconnect, including a receipt that arrives while in the Lobby place
+  - data failure; a late grant after an earned-money acquisition
+  - unknown or retired product IDs; maximum upgrade level; concurrent profile writes
+  Benefits and fallbacks must match the configured offer and be durable exactly once.
+- Inspect the profile fields and technical receipt records: no pit state saved.
+- Keep IDs, prices and fallback amounts disabled until the owner configures them.
+- Separate mock/Studio checks from published purchase tests. Do not claim real purchases were tested unless they were.
+
+CURRENT CONTRACT (v6 + owner changes, updated 2026-11-25) — applies to every phase
+This replaces the earlier "V6 FINAL CONTRACT" wherever the two differ. The change log is in GamePrompts/OWNER_CHANGES.md.
+
+PLACES
+TWO Roblox places in one universe (10779008507).
+LOBBY place = the start place "Lottery-Game" (id 126779117472575), server size 16. It is the social hub where parties form. It has no shops or economy, and it never claims or saves player profiles.
+GAMEPLAY place = "gameplay" (id 81218982278176), server size 4. Each party gets one reserved (private) server. Players who arrive any other way are sent back to the Lobby.
+
+GAMEPLAY MAP
+ONE continuous indoor map per gameplay server: the back stockroom of a ticket store. Solid perimeter walls and a complete high roof enclose BOTH zones, which adjoin directly with open internal access and no divider:
+- the smaller in-map lobby on the LEFT, with spawn and the TOOLS, UPGRADES, EXCHANGE and INSPECT counters
+- the much larger ticket pit on the RIGHT
+
+Dimensions (studs; adjustable after playtests):
+- Pit opening 100 x 160 (X 0..100, Z -80..80), flat structural bottom 40.8 below the rim (1.7x the original 24).
+- In-map lobby 120 x 120 (X -130..-10, Z -60..60).
+- Rim walkway 10 wide.
+- Roof underside 28 above the rim.
+- Two full-height yellow ladders on the lobby-facing (west) pit wall, at Z -24 and +24, are the normal way back up.
+
+PARTIES (Lobby place)
+- Walking into a free party circle creates a party, and that player becomes the leader.
+- The leader picks FRIENDS (only the leader's Roblox friends may join) or PUBLIC (anyone may join), and a max size of 1, 2, 3 or 4. The leader can change both while waiting.
+- Others join by walking into the circle if the privacy setting allows it and there is room.
+- Only the leader sees the START button. A 30-second countdown starts when the party is created and restarts from 30 whenever a member joins or the leader changes a setting; if it reaches 0, the party teleports automatically.
+- The whole party travels together to a fresh reserved gameplay server.
+
+HUNT
+- ONE shared ticket pile per gameplay server. Each player who joins the server adds a batch of tickets; leaving never removes tickets.
+- One hidden golden ticket per hunt.
+- There is NO Return-to-Lobby button during the hunt; to go back early, a player leaves the game.
+- When the golden ticket is found, every player in that server gets exactly two options: LEAVE (exit the game) or RETURN TO LOBBY (teleport to the Lobby place). These options appear ONLY after the golden ticket is found.
+
+SAVING
+- Save Money, OwnedToolIds and UpgradeLevels per player. Only the Gameplay place owns and writes profiles (session-locked).
+- Never persist pit state.
+- Bag, inspection, equipped selection, vehicle transforms and discovery counts are session-only.
+- Schema, lock and purchase-receipt metadata may be persisted for reliability.
+
+MONEY AND PURCHASES
+- Earn money by fixed-value ticket exchange, or buy fixed Money packs with Robux.
+- Each tool and permanent upgrade has an earned-money route and an optional direct Robux route to the same benefit. Robux purchases are fulfilled in the Gameplay place.
+- The Lobby place must still set ProcessReceipt and answer NotProcessedYet, so no purchase is ever auto-acknowledged there.
+- Product IDs, prices, amounts and balance are owner configuration. Never invent IDs or enable an unconfigured paid button.
+
+GOLDEN REWARD
+The golden-ticket finder receives a special reward in the final game. The exact reward is deliberately TBD. Keep a disabled, server-only finder-reward hook with honest development feedback.
+
+WORKING RULES
+- Inspect existing work, preserve valid assets, and implement only the current phase.
+- Use concise, server-authoritative Luau. Consult current official Roblox docs for platform APIs (TeleportService, MarketplaceService, DataStoreService, Players:IsFriendsWith).
+- Report actual changes, tests and blockers; never claim work that wasn't done.
+- Open owner decisions are listed in _Reference_Info/OWNER_DECISIONS_PENDING.txt.
+- Diagrams 06 and 07 still show the earlier 24-stud depth, 90 x 90 lobby and one-place wording. The written values above win.
