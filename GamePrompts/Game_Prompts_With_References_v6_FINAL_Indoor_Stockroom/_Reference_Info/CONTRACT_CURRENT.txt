@@ -1,9 +1,9 @@
-CURRENT CONTRACT (v6 + owner changes, updated 2026-11-25) — applies to every phase
+CURRENT CONTRACT (v6 + owner changes, updated 2026-11-26) Ã¢â‚¬â€ applies to every phase
 This replaces the earlier "V6 FINAL CONTRACT" wherever the two differ. The change log is in GamePrompts/OWNER_CHANGES.md.
 
 PLACES
 TWO Roblox places in one universe (10779008507).
-LOBBY place = the start place "Lottery-Game" (id 126779117472575), server size 16. It is the social hub where parties form. It has no shops or economy, and it never claims or saves player profiles.
+LOBBY place = the start place "Lottery-Game" (id 126779117472575), server size 16. It is the social hub where parties form. It hosts the gem Upgrades booth, so it must load and save profiles (session-locked handoff; owner 2026-11-26).
 GAMEPLAY place = "gameplay" (id 81218982278176), server size 4. Each party gets one reserved (private) server. Players who arrive any other way are sent back to the Lobby.
 
 GAMEPLAY MAP
@@ -31,15 +31,17 @@ HUNT
 - There is NO Return-to-Lobby button during the hunt; to go back early, a player leaves the game.
 - When the golden ticket is found, every player in that server gets exactly two options: LEAVE (exit the game) or RETURN TO LOBBY (teleport to the Lobby place). These options appear ONLY after the golden ticket is found.
 
-SAVING
-- Save Money, OwnedToolIds and UpgradeLevels per player. Only the Gameplay place owns and writes profiles (session-locked).
+SAVING (owner rework 2026-11-26 evening; see OWNER_CHANGES.md)
+- Save Gems, permanent hand-upgrade levels (bought with gems in the Lobby), Robux-owned tool ids and bag ids, and lifetime Stats. Profiles are session-locked; both places will load/save them (the Lobby needs to for the gem Upgrades booth).
+- Money (cash) does NOT save. It is per hunt, as are cash-bought tools, bags and hand upgrades.
 - Never persist pit state.
-- Bag, inspection, equipped selection, vehicle transforms and discovery counts are session-only.
+- Ticket bag contents, inspection, equipped selection, vehicle transforms and discovery counts are session-only.
 - Schema, lock and purchase-receipt metadata may be persisted for reliability.
 
-MONEY AND PURCHASES
-- Earn money by fixed-value ticket exchange, or buy fixed Money packs with Robux.
-- Each tool and permanent upgrade has an earned-money route and an optional direct Robux route to the same benefit. Robux purchases are fulfilled in the Gameplay place.
+MONEY, GEMS AND PURCHASES
+- Cash (per hunt): exchange tickets at fixed values per rarity tier. It buys tools, bags and hand upgrades for this hunt only.
+- Gems (saved): found in the pit (colour tiers worth more), earned at the end of a hunt, as a team bonus when gold is found, or bought as Robux gem packs. Gems buy permanent hand upgrades in the Lobby.
+- Tools and bags bought with Robux are owned forever. Cash purchases last one hunt. Robux purchases are fulfilled server-side with receipts.
 - The Lobby place must still set ProcessReceipt and answer NotProcessedYet, so no purchase is ever auto-acknowledged there.
 - Product IDs, prices, amounts and balance are owner configuration. Never invent IDs or enable an unconfigured paid button.
 

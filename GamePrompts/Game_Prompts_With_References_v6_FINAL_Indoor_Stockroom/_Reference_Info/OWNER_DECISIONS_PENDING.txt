@@ -11,7 +11,7 @@ DECIDED (2026-11-25)
 - (2026-11-26) Leaderboard wins go to the WHOLE TEAM: every party member present when the golden ticket is found gets +1 Total Win, and a Time Record candidate measured from their own arrival on the server.
 - (2026-11-26) The Lobby has 4 party rings. Parties are created and joined through a per-player prompt and setup panel, never by walking in.
 
-STILL PENDING — may stay pending during development
+STILL PENDING â€” may stay pending during development
 1. Golden-ticket finder's exact special reward: type, quantity/value, and whether and how it persists.
    - The hook stays disabled, with honest development feedback. No future entitlement is promised.
    - Decide and implement before public release.
@@ -34,3 +34,16 @@ The pending values do not block building the places, map, assets, tools, UI, per
    - Open: whether the stockroom keeps its own TOOLS / UPGRADES counters.
    - Making them work needs the Lobby to load and save profiles (a session-locked handoff on teleport). That reverses the "Lobby never saves" rule, so design it with the data layer, not as a quick hack.
    - DAILY GIFT and any CODES booth would add saved fields beyond Money / OwnedToolIds / UpgradeLevels.
+
+ECONOMY REWORK (owner, 2026-11-26 evening; details in OWNER_CHANGES.md)
+DECIDED
+- Cash is per hunt. Gems are the saved currency.
+- The hand is the starter Ticket Grabber. Upgrades improve only the hand: cash buys them for one hunt, gems in the Lobby buy them forever.
+- Tools and bags: cash buys them for one hunt, Robux buys them forever.
+- Gems come from pit pickups (colour tiers), end-of-hunt earnings, a whole-team golden-ticket bonus and Robux packs.
+- Ticket rarity tiers (e.g. Ruby, Rainbow) are worth more cash.
+STILL PENDING (TEST values used until approved)
+13. The hand-upgrade list (proposed: Reach, Grab Speed, Grab Size), with cash and gem prices.
+14. Gem and ticket rarity tiers, their values and spawn rates.
+15. Bag tiers and capacities, their cash prices, and the Robux product ids.
+16. Gem earnings per hunt (per ticket) and the golden-ticket team bonus.

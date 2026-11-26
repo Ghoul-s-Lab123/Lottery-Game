@@ -2,6 +2,43 @@
 
 The pack itself says the user's request comes before its written rules. These decisions override the matching parts of every phase prompt. Read this file before starting each phase.
 
+## 2026-11-26, evening (economy rework: per-hunt cash, saved gems, rarities, bags)
+
+This overrides the SAVING and MONEY AND PURCHASES parts of the contract, and every phase prompt that saves Money, OwnedToolIds or UpgradeLevels.
+
+1. **Cash is per hunt.** Every hunt starts at $0. Exchanged tickets give cash, and cash buys tools, bags and hand upgrades in the stockroom. All cash and everything bought with it is gone when the hunt ends: on LEAVE, RETURN TO LOBBY or disconnect. Money no longer saves.
+2. **The hand = the starter Ticket Grabber.** Everyone always has it.
+3. **Upgrades improve only the hand.**
+   - Bought with cash in the stockroom: lasts for this hunt only.
+   - Bought with **gems in the Lobby** (Upgrades booth): permanent, forever.
+   - The old five categories (Movement Speed, Dig Speed, Reach, Carry Capacity, Scratch Speed) do not carry over as they are. The new hand-upgrade list is pending (DECISIONS item 13).
+4. **Gems are the saved currency.** Players get them from:
+   - **Gems found in the pit:** several colours or tiers, each worth more.
+   - **The end of each hunt:** based on tickets collected.
+   - **A whole-team bonus** when the golden ticket is found.
+   - **Robux gem packs** (owner-configured ids only).
+5. **Ticket rarities work the same way:** rarer tickets (e.g. Ruby, Rainbow) are worth more cash when exchanged. The ordinary tickets keep their 20 cosmetic colours. Tier list, values and spawn rates are TEST until approved.
+6. **Tools:**
+   - Bought with cash: this hunt only.
+   - Bought **with Robux only**: owned forever.
+   - There is no cash-to-permanent route.
+7. **Bags:** scaled bag tiers, each holding more tickets.
+   - Bought with cash: this hunt only.
+   - Bought with Robux: owned forever.
+8. **What saves now:**
+   - Gems
+   - permanent hand-upgrade levels
+   - Robux-owned tool ids and bag ids
+   - lifetime `Stats`
+   - receipt and lock metadata
+
+   Money, cash-bought tools and bags, and cash upgrades are session-only.
+9. **The Lobby must load and save profiles**, because the gem Upgrades booth sits there. This is the session-locked handoff already noted in DECISIONS item 7, and it is now required.
+10. **New Blender assets are needed:**
+    - findable gems in several colours
+    - rarity ticket designs
+    - the bag tiers
+
 ## 2026-11-26, polish pass (party interaction, record wall, flicker, attendants)
 
 1. **No world text at the rings.** The four rings are painted on their own office-floor tiles (`CircleN.Floor`).
