@@ -59,7 +59,10 @@ Tell your user that their copy of the prompts is wrong, and switch to these file
 - `Shared.Config` and `Shared.Travel` exist in both places and must stay identical.
 - Reserved servers use `TeleportOptions.ReservedServerId` = a new GUID (`ReserveServerAsync` is deprecated).
 - **Studio can test teleports.** The destination loads its *last saved* version, so save both places before testing travel.
-- The **next step** is phase 03 (Blender tickets and ten tools), after the owner's multi-client party test.
+- **Phase 03 (2026-11-26): done and approved by the owner, including unique colours per tool. Gameplay saved as v20.** The next step is phase 04.
+  - Tickets (regular 36 tris + gold 76, with printed detail) and all ten tools (smoothed: bevels and smooth shading) are in `Assets/`: the `.blend` source, rebuild scripts, two GLBs, two textures, and `MANIFEST.md` / `manifest.json` with tris and grip offsets.
+  - Uploaded at the owner's request (group assets 86634259228339 tickets, 91521913312817 tools). Templates are in Gameplay `ServerStorage.AssetKit` (`Tools.<Id>`, `Tickets`). See `Assets/MANIFEST.md` "Roblox import status".
+  - Regular tickets tint through `MeshPart.Color` via a `SurfaceAppearance` set to `AlphaMode.Overlay` (a plain TextureID draws see-through pixels black). Keep `RenderFidelity = Precise` on every asset clone, or the distance LOD drops pieces.
 - The Gameplay place has Studio API access **on**, so its playtests use the real DataStore. `ServerStorage.TestProfileKey = "dev"` keeps Studio sessions on an isolated `TEST_dev_<userId>` key.
 - The source of truth for scripts is Roblox Studio, which uses Team Create.
 

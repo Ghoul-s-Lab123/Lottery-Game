@@ -1,2 +1,6 @@
 # Prompt-pack handoff zips duplicate GamePrompts/ and go stale; the folder is the source.
 GamePrompts/*.zip
+
+# Blender backups and Python caches from the asset build scripts
+*.blend1
+__pycache__/

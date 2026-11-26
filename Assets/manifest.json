@@ -1,0 +1,445 @@
+{
+ "units": "1 Blender unit = 1 stud",
+ "axes": "Roblox (X, Y up, -Z forward) = Blender (X, Z, -Y)",
+ "smoothing": "1-segment bevels, smooth shading split at 50 deg, weighted normals baked",
+ "assets": {
+  "Ticket_Regular": {
+   "mesh": "Ticket_Regular",
+   "tris": 36,
+   "sizeStuds": [
+    2.4,
+    0.05,
+    1.0
+   ],
+   "originFromBoxCentre": [
+    -0.0,
+    -0.0,
+    0.0
+   ]
+  },
+  "Ticket_Golden": {
+   "mesh": "Ticket_Golden",
+   "tris": 76,
+   "sizeStuds": [
+    2.4,
+    0.05,
+    1.0
+   ],
+   "originFromBoxCentre": [
+    -0.0,
+    -0.0,
+    0.0
+   ]
+  },
+  "01_TicketGrabber": {
+   "tris": 584,
+   "parts": {
+    "TicketGrabber_Body": {
+     "mesh": "TicketGrabber_Body",
+     "tris": 376,
+     "sizeStuds": [
+      0.5,
+      1.442,
+      3.255
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      -0.129,
+      1.232
+     ]
+    },
+    "TicketGrabber_JawLower": {
+     "mesh": "TicketGrabber_JawLower",
+     "tris": 104,
+     "sizeStuds": [
+      0.32,
+      0.471,
+      0.935
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      0.179,
+      0.49
+     ],
+     "pivotFromParentBoxCentre": [
+      0.0,
+      0.491,
+      -1.567
+     ],
+     "parent": "TicketGrabber_Body"
+    },
+    "TicketGrabber_JawUpper": {
+     "mesh": "TicketGrabber_JawUpper",
+     "tris": 104,
+     "sizeStuds": [
+      0.24,
+      0.471,
+      0.935
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      -0.179,
+      0.49
+     ],
+     "pivotFromParentBoxCentre": [
+      0.0,
+      0.491,
+      -1.567
+     ],
+     "parent": "TicketGrabber_Body"
+    }
+   }
+  },
+  "02_DustpanScoop": {
+   "tris": 306,
+   "parts": {
+    "DustpanScoop": {
+     "mesh": "DustpanScoop",
+     "tris": 306,
+     "sizeStuds": [
+      2.034,
+      1.561,
+      3.4
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      0.302,
+      1.07
+     ]
+    }
+   }
+  },
+  "03_HandRake": {
+   "tris": 534,
+   "parts": {
+    "HandRake": {
+     "mesh": "HandRake",
+     "tris": 534,
+     "sizeStuds": [
+      1.75,
+      2.014,
+      1.913
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      0.488,
+      0.314
+     ]
+    }
+   }
+  },
+  "04_PushBroom": {
+   "tris": 386,
+   "parts": {
+    "PushBroom": {
+     "mesh": "PushBroom",
+     "tris": 386,
+     "sizeStuds": [
+      3.0,
+      4.179,
+      3.211
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      1.58,
+      1.149
+     ]
+    }
+   }
+  },
+  "05_Shovel": {
+   "tris": 384,
+   "parts": {
+    "Shovel": {
+     "mesh": "Shovel",
+     "tris": 384,
+     "sizeStuds": [
+      1.29,
+      0.556,
+      4.972
+     ],
+     "originFromBoxCentre": [
+      0.0,
+      -0.121,
+      2.394
+     ]
+    }
+   }
+  },
+  "06_HandheldVacuum": {
+   "tris": 344,
+   "parts": {
+    "HandheldVacuum": {
+     "mesh": "HandheldVacuum",
+     "tris": 344,
+     "sizeStuds": [
+      1.08,
+      1.587,
+      2.62
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      0.687,
+      0.51
+     ]
+    }
+   }
+  },
+  "07_LeafBlower": {
+   "tris": 388,
+   "parts": {
+    "LeafBlower": {
+     "mesh": "LeafBlower",
+     "tris": 388,
+     "sizeStuds": [
+      1.28,
+      1.951,
+      4.15
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      0.854,
+      1.345
+     ]
+    }
+   }
+  },
+  "08_ShopVac": {
+   "tris": 956,
+   "parts": {
+    "ShopVac": {
+     "mesh": "ShopVac",
+     "tris": 956,
+     "sizeStuds": [
+      2.16,
+      2.876,
+      4.39
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      1.373,
+      1.115
+     ]
+    }
+   }
+  },
+  "09_RotarySweeper": {
+   "tris": 1068,
+   "parts": {
+    "RotarySweeper_Body": {
+     "mesh": "RotarySweeper_Body",
+     "tris": 508,
+     "sizeStuds": [
+      3.6,
+      2.986,
+      4.046
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      -1.873,
+      -0.483
+     ]
+    },
+    "RotarySweeper_BrushL": {
+     "mesh": "RotarySweeper_Brush",
+     "tris": 112,
+     "sizeStuds": [
+      1.53,
+      0.45,
+      1.53
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      0.205,
+      0.0
+     ],
+     "pivotFromParentBoxCentre": [
+      -0.85,
+      -1.423,
+      -1.733
+     ],
+     "parent": "RotarySweeper_Body"
+    },
+    "RotarySweeper_BrushR": {
+     "mesh": "RotarySweeper_Brush",
+     "tris": 112,
+     "sizeStuds": [
+      1.53,
+      0.45,
+      1.53
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      0.205,
+      0.0
+     ],
+     "pivotFromParentBoxCentre": [
+      0.85,
+      -1.423,
+      -1.733
+     ],
+     "parent": "RotarySweeper_Body"
+    },
+    "RotarySweeper_WheelL": {
+     "mesh": "Wheel",
+     "tris": 168,
+     "sizeStuds": [
+      0.49,
+      1.471,
+      1.471
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      -0.0,
+      0.0
+     ],
+     "pivotFromParentBoxCentre": [
+      -1.62,
+      -1.123,
+      0.417
+     ],
+     "parent": "RotarySweeper_Body"
+    },
+    "RotarySweeper_WheelR": {
+     "mesh": "Wheel",
+     "tris": 168,
+     "sizeStuds": [
+      0.49,
+      1.471,
+      1.471
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      -0.0,
+      0.0
+     ],
+     "pivotFromParentBoxCentre": [
+      1.62,
+      -1.123,
+      0.417
+     ],
+     "parent": "RotarySweeper_Body"
+    }
+   }
+  },
+  "10_RideOnVacuum": {
+   "tris": 2304,
+   "parts": {
+    "RideOnVacuum_Body": {
+     "mesh": "RideOnVacuum_Body",
+     "tris": 1376,
+     "sizeStuds": [
+      4.5,
+      3.424,
+      7.122
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      -1.812,
+      0.166
+     ]
+    },
+    "RideOnVacuum_SteeringWheel": {
+     "mesh": "RideOnVacuum_SteeringWheel",
+     "tris": 256,
+     "sizeStuds": [
+      1.161,
+      0.243,
+      1.162
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      -0.0,
+      0.0
+     ],
+     "pivotFromParentBoxCentre": [
+      0.0,
+      1.438,
+      -0.384
+     ],
+     "parent": "RideOnVacuum_Body"
+    },
+    "RideOnVacuum_WheelFL": {
+     "mesh": "Wheel",
+     "tris": 168,
+     "sizeStuds": [
+      0.583,
+      1.569,
+      1.569
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      -0.0,
+      0.0
+     ],
+     "pivotFromParentBoxCentre": [
+      -1.75,
+      -1.012,
+      -1.584
+     ],
+     "parent": "RideOnVacuum_Body"
+    },
+    "RideOnVacuum_WheelFR": {
+     "mesh": "Wheel",
+     "tris": 168,
+     "sizeStuds": [
+      0.583,
+      1.569,
+      1.569
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      -0.0,
+      0.0
+     ],
+     "pivotFromParentBoxCentre": [
+      1.75,
+      -1.012,
+      -1.584
+     ],
+     "parent": "RideOnVacuum_Body"
+    },
+    "RideOnVacuum_WheelRL": {
+     "mesh": "Wheel",
+     "tris": 168,
+     "sizeStuds": [
+      0.653,
+      1.863,
+      1.863
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      -0.0,
+      0.0
+     ],
+     "pivotFromParentBoxCentre": [
+      -1.75,
+      -0.862,
+      1.916
+     ],
+     "parent": "RideOnVacuum_Body"
+    },
+    "RideOnVacuum_WheelRR": {
+     "mesh": "Wheel",
+     "tris": 168,
+     "sizeStuds": [
+      0.653,
+      1.863,
+      1.863
+     ],
+     "originFromBoxCentre": [
+      -0.0,
+      -0.0,
+      0.0
+     ],
+     "pivotFromParentBoxCentre": [
+      1.75,
+      -0.862,
+      1.916
+     ],
+     "parent": "RideOnVacuum_Body"
+    }
+   }
+  }
+ }
+}
