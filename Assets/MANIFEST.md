@@ -94,3 +94,55 @@ Each tool has its own palette: the same 256 px cell layout, with the main (teal)
 | ShopVac | cobalt 2563EB / yellow FACC15 | 105581366860612 |
 | RotarySweeper | teal 14B8A6 / coral FB7185 | 92142109192333 |
 | RideOnVacuum | purple 6D28D9 / gold F5B700 | 127201969658338 |
+# Phase 03 extension: gems, rarity tickets, bags (2026-11-26, economy rework)
+
+Built headless (`blender -b ... --python Blender/scripts/run_extension.py -- --export --save`), because the Blender MCP was offline. Scripts: `build_gems.py`, `build_rarity.py`, `build_bags.py`; the runner also renders previews (`--preview DIR`). Tiers, values, rates and capacities are **TEST** until the owner approves (OWNER_DECISIONS_PENDING items 13-16). No values are baked into the art or the templates.
+
+## Assets (tris re-measured from the exported GLBs)
+
+| Asset | Tris | Size (studs, Roblox X x Y x Z) | Notes |
+|---|---|---|---|
+| Gem | 58 | 1.3 x 0.85 x 1.24 | 10-sided brilliant, table up, origin at box centre. Facets kept flat on purpose (a cut gem); only the girdle is smooth. Every facet plane has its own cell in an 8 x 8, 256 px texture, so one texture per tier paints shaded facets, glints, or the Rainbow hue sweep. |
+| Rarity tickets (6) | 36 | 2.4 x 0.05 x 1.0 | No new mesh: the Ticket_Regular mesh with an opaque 512 px print per tier in `TextureID`. Dark rich panel, shiny tier border, cut-gem emblem, "<TIER> TICKET" caption. Rainbow has a hue-band border. |
+| Bag_Satchel | 812 | 1.79 x 2.05 x 1.79 | Starter. Brown flap, gold clasp, one strap across the body (right shoulder to left hip). |
+| Bag_TicketPouch | 1,344 | 1.38 x 1.95 x 2.01 | Red tapered tub, cream rim and handle plate, cream straps with red keeper pads. |
+| Bag_Backpack | 836 | 1.75 x 2.46 x 2.22 | Rounded blue body, big zip pocket, side pocket, thick blue straps with yellow adjusters. |
+| Bag_Tube | 1,056 | 2.76 x 1.91 x 2.14 | Purple tube, orange caps, dark bands, tickets out of a top slot, brown straps with gold buckles. |
+| Bag_Sack | 1,200 | 1.72 x 2.68 x 2.45 | Tan teardrop sack, ruffled neck, red cord and tails, cream patch, one strap over the left shoulder. |
+| Bag_Wagon | 2,586 (+4 wheels) | 2.18 x 1.83 x 4.57 | Ticket Wagon: teal slotted tub, yellow rim, ticket heap, grey chassis, pull handle whose loop sits at the right hand. Wheels = the tools' Wheel mesh at r 0.45. |
+
+Bags rebuilt 2026-11-26 from the owner's reference sheets (Satchel / Ticket Pouch / Backpack / Tube / Sack + Ticket Wagon). Tier order and TEST capacities: Satchel 25, TicketPouch 50, Backpack 100, Tube 200, Sack 400, Wagon 800. All six share one 8 x 8 colour atlas (`Export/FWL_BagAtlas.png`); ticket stubs have the V notches of the real ticket, some with a stripe.
+
+## Bag frame
+
+Origin = centre of an R6 torso's **back face**. In Roblox: `bag:PivotTo(torso.CFrame * CFrame.new(0, 0, 0.5))`. The template pivot's LookVector is the wearer's facing direction. Attachment `Body.BodyBack` sits on the pivot (for a weld or RigidConstraint). All bag parts are Massless, CanCollide/CanTouch false. The Wagon also has `Body.HandGrip` at the R6 right hand (torso-relative (1.5, -1.1, -0.45)); it is welded at the back like the others, so the arm animation does not swing it.
+
+## Roblox import status (Gameplay place)
+
+- Models (group 196081645, approved): `FWL_Gems` **131271447263604**, `FWL_Bags_v2` **130666425440635** (the first-pass `FWL_Bags` 76356890869450 is superseded and unused). Untouched copies in `ServerStorage.AssetKit.Imported`.
+- The importer frame is the same as for the tools: a MeshPart's local (x, y, z) = Blender (-x, z, y). Templates turn the Body 180 deg about Y and place it at Blender bbox centre (cx, cz, -cy).
+- Setting `Model.WorldPivot` on a model that has a PrimaryPart did not stick in Studio; set `PrimaryPart.PivotOffset` instead.
+- Templates (`ServerStorage.AssetKit`), all SmoothPlastic, anchored, `RenderFidelity = Precise`, box collision, `TierIndex` attribute:
+  - `Gems.<Tier>`: MeshPart, MeshId 72275395184049.
+  - `Tickets.Rarity.<Tier>`: Ticket_Regular clone, SurfaceAppearance removed, TextureID = the tier print (opaque, so no Overlay needed).
+  - `Bags.<Id>` (Satchel, TicketPouch, Backpack, Tube, Sack, Wagon): Model, PrimaryPart `Body`, `Atlas` attribute; Wagon also has `Wheel1..4` (axles along X at x 0.75 +- 1.08, y -2.55, z 1.55 / 3.35 from the pivot).
+
+| Tier | Gem texture | Rarity ticket print |
+|---|---|---|
+| Emerald | 79979767185845 (importer) | 130773903627813 |
+| Sapphire | 82778712099553 | 94302363281403 |
+| Amethyst | 86102228418014 | 121597475487269 |
+| Ruby | 124906806029825 | 79800246031454 |
+| Diamond | 96345544450042 | 71828029591038 |
+| Rainbow | 99883110138823 | 77171683461940 |
+
+| Bag | MeshId |
+|---|---|
+| Satchel | 116656063185157 |
+| TicketPouch | 107749920545736 |
+| Backpack | 118431505022406 |
+| Tube | 99945982908835 |
+| Sack | 90376397194152 |
+| Wagon | 112755898388637 |
+
+Shared bag atlas (importer): 94351699861192.

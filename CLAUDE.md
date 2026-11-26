@@ -38,7 +38,11 @@ Tell your user that their copy of the prompts is wrong, and switch to these file
    - Only **after the golden ticket is found** do all players get two options: **LEAVE** or **RETURN TO LOBBY**.
    - Choosing either auto-exchanges the bag first.
    - Players may keep collecting the leftover tickets until they choose. No new gold, no refill.
-6. **Unchanged from v6:**
+6. **Economy rework (owner, 2026-11-26 evening).** It overrides the save rules below; see OWNER_CHANGES.
+   - Cash is per hunt. Tools and bags bought with cash last one hunt; bought with Robux they are owned forever.
+   - Gems are saved. They buy permanent hand upgrades (the starter Ticket Grabber) in the Lobby, so the Lobby must save profiles.
+   - Gems are found in the pit in colour tiers, and tickets have rarity tiers worth more. Bags come in tiers.
+7. **Unchanged from v6** (except where item 6 overrides it):
    - Save only Money, OwnedToolIds, UpgradeLevels and (schema v2, 2026-11-26) lifetime `Stats` for the leaderboards, plus receipt and lock metadata. Only the Gameplay place saves.
    - Never save pit state.
    - (2026-11-26) The Lobby booths must work, so the Lobby will need to load and save profiles. That is not built yet.
@@ -59,7 +63,12 @@ Tell your user that their copy of the prompts is wrong, and switch to these file
 - `Shared.Config` and `Shared.Travel` exist in both places and must stay identical.
 - Reserved servers use `TeleportOptions.ReservedServerId` = a new GUID (`ReserveServerAsync` is deprecated).
 - **Studio can test teleports.** The destination loads its *last saved* version, so save both places before testing travel.
-- **Phase 03 (2026-11-26): done and approved by the owner, including unique colours per tool. Gameplay saved as v20.** The next step is phase 04.
+- **Phase 03 (2026-11-26): done and approved by the owner, including unique colours per tool. Gameplay saved as v20.**
+  - **Phase 03 extension (2026-11-26): done and approved by the owner. Gameplay saved as v24.**
+    - Pit gems in 6 tiers, 6 rarity ticket prints, and 6 bags rebuilt from the owner's reference sheets: Satchel, TicketPouch, Backpack, Tube, Sack and Wagon.
+    - Templates are in `ServerStorage.AssetKit.{Gems, Tickets.Rarity, Bags}`. Every id is in `Assets/MANIFEST.md`.
+    - The Blender build runs headless: `blender -b Assets/Blender/FWL_Phase03_TicketsAndTools.blend --python Assets/Blender/scripts/run_extension.py -- [--export] [--save] [--preview DIR]`.
+  - Next: phase 04.
   - Tickets (regular 36 tris + gold 76, with printed detail) and all ten tools (smoothed: bevels and smooth shading) are in `Assets/`: the `.blend` source, rebuild scripts, two GLBs, two textures, and `MANIFEST.md` / `manifest.json` with tris and grip offsets.
   - Uploaded at the owner's request (group assets 86634259228339 tickets, 91521913312817 tools). Templates are in Gameplay `ServerStorage.AssetKit` (`Tools.<Id>`, `Tickets`). See `Assets/MANIFEST.md` "Roblox import status".
   - Regular tickets tint through `MeshPart.Color` via a `SurfaceAppearance` set to `AlphaMode.Overlay` (a plain TextureID draws see-through pixels black). Keep `RenderFidelity = Precise` on every asset clone, or the distance LOD drops pieces.
