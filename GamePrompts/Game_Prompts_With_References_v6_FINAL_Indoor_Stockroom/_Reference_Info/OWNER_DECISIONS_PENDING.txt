@@ -3,10 +3,13 @@ OWNER DECISIONS (updated 2026-11-25)
 DECIDED (2026-11-25)
 - Leader walks out of the circle or disconnects before travel: the party is disbanded and every member is removed from it.
 - The 30-second auto-start countdown RESTARTS from 30 whenever a member joins or the leader changes privacy or size.
-- The Lobby place has 6 party circles.
+- The Lobby place has 4 party rings (owner, 2026-11-26; was 6).
 - After the golden ticket is found, players may keep collecting and exchanging the leftover ordinary tickets while the LEAVE / RETURN TO LOBBY options are shown. No new gold and no refill.
 - Choosing LEAVE or RETURN TO LOBBY auto-exchanges the unexchanged bag once at the fixed value. A plain disconnect still loses an unexchanged bag.
 - A disconnected player cannot rejoin the party's gameplay server; they land in the Lobby.
+
+- (2026-11-26) Leaderboard wins go to the WHOLE TEAM: every party member present when the golden ticket is found gets +1 Total Win, and a Time Record candidate measured from their own arrival on the server.
+- (2026-11-26) The Lobby has 4 party rings. Parties are created and joined through a per-player prompt and setup panel, never by walking in.
 
 STILL PENDING — may stay pending during development
 1. Golden-ticket finder's exact special reward: type, quantity/value, and whether and how it persists.
@@ -19,9 +22,15 @@ STILL PENDING — may stay pending during development
    - Paid options remain disabled until correctly configured and fulfillment is tested.
 4. Real-device and published purchase/teleport tests: report only the tests actually performed.
    - The prompt pack does not authorize spending real Robux automatically.
-5. Visual design of the Lobby place.
-   - No reference image yet; build a simple blockout in the stockroom color style.
+5. Visual design of the Lobby place. BUILT (2026-11-26, Lobby v49): the "ticket courtyard at dusk" from the owner's brief (see OWNER_CHANGES 2026-11-26 late + polish pass).
+   - Compass spawn facing the golden-ticket marquee; open-front ticket office with 4 rings; Classes (left) and Upgrades (right) booths with attendants; record wall behind the spawn.
 6. Ticket batch sizes: base pile, per-joining-player batch, and maximum.
    - TEST values are set in phase 05.
 
 The pending values do not block building the places, map, assets, tools, UI, persistence, receipt dispatcher or mock tests. Claude should proceed phase by phase and name the specific manual configuration when it becomes relevant.
+7. Lobby shop booths (owner: "the booths should work").
+   - The booth list is now exactly two: UPGRADES and CLASSES. Tools / Daily Gift / Cash Store were removed.
+   - UPGRADES lists the real UpgradeCatalog but cannot buy yet. CLASSES shows "No classes yet" because no class data exists; don't invent classes.
+   - Open: whether the stockroom keeps its own TOOLS / UPGRADES counters.
+   - Making them work needs the Lobby to load and save profiles (a session-locked handoff on teleport). That reverses the "Lobby never saves" rule, so design it with the data layer, not as a quick hack.
+   - DAILY GIFT and any CODES booth would add saved fields beyond Money / OwnedToolIds / UpgradeLevels.
