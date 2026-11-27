@@ -2,6 +2,18 @@
 
 Shared notebook between Albert's Claude and Ghoul's Claude. Newest entry on top.
 
+## 2026-11-27 (evening) — Albert's Claude: Studio TEST PANEL (both places)
+
+**Done (Studio):** press **P** in a Studio play-test (or the TEST tab, bottom right).
+- Gameplay (`Server.TestPanel`, started from `Hunt.start` only in Studio): cash +100 .. +1M / 0, gems (saved), any of the 10 tools or all, forever tools / bags (saved, like a Robux buy), pick any bag, fill the bag (real odds / rare mix / one of each rarity), sell, empty, hand upgrades (hunt levels and saved gem levels, +1 / MAX / 0), golden ticket (SHOW IT beam, GO THERE, UNCOVER IT, FIND IT NOW), +1 join batch, teleport to stockroom / pit, fast walk, save now, reset my save.
+- Lobby (`Lobby.TestPanel`, started in `Lobby.Main`'s Studio block): gems, forever hand levels, forever tools / bags, teleport to spawn / Upgrades booth / party ring 1, save now, reset my save.
+- One client script, `StarterPlayerScripts.TestPanelClient`, byte-identical in both places (12873 chars, hash 1616539340). It only draws what the server sends, so each place has its own buttons.
+- Small edits: `Gold.testClaim(player)` (Studio-only, runs the normal claim with all its checks); `Lobby.Main` now starts Parties BEFORE PlayerData (in Studio, PlayerData's DataStore check made PartyClient warn "Infinite yield ... PartyRemotes").
+
+**Tested in Play:** every gameplay button (mouse clicks and remote calls), the SURE? double tap, gold beam, find-it-now (banner, LEAVE / RETURN panel, +25 gems); every Lobby button; the Lobby loaded the gems the gameplay test saved. No errors in Output (Lobby still shows the old streaming warning for `Circle1`).
+
+**Ghoul should know:** the panel is safe live (the remote is never created outside Studio; the client deletes itself). SAVED buttons change your real profile in Studio. FIND IT NOW and a real Studio claim both count a win on the leaderboard data.
+
 ## 2026-11-27 (later) — Albert's Claude: Lobby saving, gem Upgrades booth, teleport handoff, phase 09 checks
 
 **Done (Studio, both places):**
