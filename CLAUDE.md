@@ -75,6 +75,20 @@ Tell your user that their copy of the prompts is wrong, and switch to these file
 - The Gameplay place has Studio API access **on**, so its playtests use the real DataStore. `ServerStorage.TestProfileKey = "dev"` keeps Studio sessions on an isolated `TEST_dev_<userId>` key.
 - The source of truth for scripts is Roblox Studio, which uses Team Create.
 
+## Phase 05 / 07 / 04-scripting (Albert's Claude, 2026-11-27, Gameplay place, all tested in Play)
+
+Work split (Albert's list, 2026-11-27): Albert's Claude = gameplay systems (05, 07, 04 scripting, 08 saving, 09 checks); Ghoul = look, assets, owner jobs. The HUD and counter windows below are working first versions; Ghoul's phase 08 screens may restyle them (`HuntUi` holds the shared look).
+
+- **Pile** (`Server.Pile`): height field, 50 x 80 columns of 2 x 2 studs, 0.5-stud layers; one layer = one ticket. Content per layer from a per-server seed (Ordinary / rarity / `Gem_<tier>`), so nothing per ticket is stored. Columns are server Parts in `Workspace.Pile` (attribute `Top` = special top content); KeepClear zones stay empty and the pile slopes down to them (`MaxStep` 2 layers), so ladders and the equipment pad stay reachable. Tickets slide (no column > 2 layers above a neighbour). The edit-time `TicketBedPreview` is destroyed only in the running server. Join batch: +2,500 tickets per admitted player, never on the gold column, nothing after gold.
+- **Gold** (`Server.Gold`): 5-10 layers deep; a glint shows within 3 layers; exposed = lies on top with a hold-E "Claim" prompt. First valid claim wins (flag set before any yield), `HuntState.resolve(finder)`; `Gold.grantFinderReward` is the disabled reward hook (shows `Config.GoldenReward.DevMessage`). Hunt-end gems: tickets this hunt / 20 + team bonus 25.
+- **Dig** (`Server.Dig`): the one collection pipeline. Checks equipped owned tool, alive, not on a ladder, cooldown, reach to the real column top, bag room; tickets -> bag + `RunStats.addCollected`, gems -> saved `Gems`. Shapes per `ToolCatalog.Action`; hand upgrades (cash this hunt + gems forever, capped at MaxLevel) only change the Ticket Grabber.
+- **Tools** (`Server.Tools`): owned tools become Roblox Tools from `AssetKit.Tools`; Rotary Sweeper is pushed in front and sweeps while you move; Ride-on only starts on the equipment pad, you sit (the character's own sit animation; this place is **R15**) and drive with normal controls, it leaves on unequip / ladder / leaving the pit / death. Worn bag on the UpperTorso. Copies AssetKit previews to `ReplicatedStorage.HuntAssets` at runtime.
+- **Clients**: `PileClient` (ticket meshes on column tops, rarity tickets, spinning gems), `ToolClient` (click/tap, hold repeats, aim ring, flying tickets), `HuntHud`, `StationClient` (the 5 counter windows from `StationPrompt`), `HuntUi` (shared look, toasts).
+- **Save schema 3** (`Config.Data.SchemaVersion = 3`, `Schema`): adds `Gems`, `HandLevels` (permanent), `OwnedBagIds`; schema 2 profiles migrate (fields start empty). The Lobby must use the same Data modules before it saves.
+- **Robux**: `ProductCatalog` rebuilt for the rework: kinds `GemPack`, `Tool`, `Bag` (cash packs and old upgrade targets removed; none was ever configured). Fulfillments registered in `Server.Hunt`. Duplicate Tool / Bag = `DuplicateFallbackGems` (owner sets; unset = not sellable). No ids, so every paid button stays off ("Forever with Robux: not on sale yet").
+- **Tuning**: every pile / gem / rarity / tool-feel number is TEST in `Shared.HuntTuning` (kept out of Config so Config stays identical in both places).
+- **Studio test hook**: `ServerStorage._HuntDev:Invoke(action, userId, ...)`: Gold, Uncover, Use, Give, Sell, SetBag, Gems, Receipt, Total.
+
 ## Working rules for this project
 
 - Follow the phases in order: 01, 02, 02B, 03–09. Read the phase `.txt`, look at **every** PNG in its folder, and read `OWNER_CHANGES.md` before starting.
