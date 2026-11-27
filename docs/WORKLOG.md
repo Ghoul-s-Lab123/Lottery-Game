@@ -2,6 +2,21 @@
 
 Shared notebook between Albert's Claude and Ghoul's Claude. Newest entry on top.
 
+## 2026-11-28 (later) — Albert's Claude: only the grabber puts tickets in your hand; every other tool fills the bag (Gameplay place)
+
+**Albert's request:** "only the ticket grabber [should] place the ticket in your hands, all the others should place them in your bag so you dont really need to see them".
+
+**Done (Studio):**
+- `Shared.ToolMotion`: new `Hand = true` on the Ticket Grabber only, `ToolMotion.toHand(id)`, and `ToolMotion.Bag` (Fly 0.3 s, Arc 1.4, Carry 0.55 = tickets on a scoop / rake / broom / shovel are drawn at 55 % so they fit on it).
+- `ToolStroke`: the grabber still carries across to the right-hand stack. Every other tool ends its stroke with a toss: on the body, the hand swings up to shoulder height and the tool stands up; in first person, a short flick forward and to the left that never comes past your face.
+- `HandView` (first person): the right hand only shows with the grabber. Other tools' tickets fly up and out at the top left of the screen (over your shoulder) and are gone. Studio self-test now sends your own strokes to your body.
+- `WorldRig` (what others see): the right arm only holds the stack with the grabber; otherwise the normal animations move it. Tickets arc over the left shoulder into the `WornBag` (aimed at the bag's outer side, not inside the torso).
+- Backups: `ServerStorage._Backups.*_before_bagonly_2026_11_28` (HandView, WorldRig, ToolStroke, ToolMotion).
+
+**Tested (solo Play, frozen frames + numbers):** scoop in first person (no right hand, view clear at the toss, tickets leave at the top left, all 8 flights done, bag 8); grabber in first person (ticket to the right hand, unchanged); vacuum (7 sucked in, no right hand); rake in first person; on the body seen from outside (`RigSelfTest`): scoop and shovel toss up and their tickets arc over the head into the bag, right arm hangs free; grabber still has the stack in the right hand. No errors in Output.
+
+**Not tested yet:** 2 players (one works, one watches); broom, blower, shop vac, machines with this change; phones.
+
 ## 2026-11-28 — Albert's Claude: left-hand tools, right-hand ticket stack, strokes for every tool (Gameplay place)
 
 **Built on the 2026-11-27 first-person work** (FirstPersonClient, PileView, PickupFx, the old ViewModel; that work has no WORKLOG entry yet, so whoever made it: please add one). Backups of every script I touched before changing it: `ServerStorage._Backups.*_before_handed_2026_11_28`.
