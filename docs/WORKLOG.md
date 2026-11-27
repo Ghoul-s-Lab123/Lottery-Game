@@ -2,6 +2,24 @@
 
 Shared notebook between Albert's Claude and Ghoul's Claude. Newest entry on top.
 
+## 2026-11-28 (evening) — Albert's Claude: leaf blower removed, bags +40 %, machines fixed (Gameplay place)
+
+**Albert's request:** delete the leaf blower; every bag +40 %; Ride-on and Rotary Sweeper must collect when you stand still, not look transparent, and be held with both hands; the Ride-on usable anywhere, not just from the pit floor.
+
+**Done (Studio):**
+1. Leaf Blower removed: gone from `Shared.ToolCatalog` (orders renumbered: Shop Vac 7, Sweeper 8, Ride-on 9), `ToolMotion`, the TOOLS window text; model moved to `ServerStorage._Backups.Retired_LeafBlower_2026_11_28`. The id `LeafBlower` is retired (old saves may still list it; it is ignored).
+2. `Shared.BagCatalog`: 25/50/100/200/400/800 -> **35/70/140/280/560/1120**.
+3. `Dig.sweep`: no "must be moving" check, so both machines collect standing still.
+4. Machines solid in first person (`HandView` resets LocalTransparencyModifier on your `Machine` after the camera fades your character) and held with **both hands** in first person and on the body others see (`ToolMotion.machineGrip`, used by `HandView` and `WorldRig`). The Ride-on's steering wheel (`AssetKit.Tools.RideOnVacuum.SteeringWheel`) is 1.6x wider so two blocky hands fit; first-person hands on a machine are drawn at 60 %.
+5. `Server.Tools`: the Ride-on starts anywhere (equipment-pad rule and "stays in the pit" recall removed; a ladder still puts it away).
+- Also: TestPanel says "All 9 tools" (counted from the catalog). Backups: `ServerStorage._Backups.*_before_machines_2026_11_28` and `RideOnVacuum_before_bigwheel_2026_11_28`.
+
+**Tested (solo Play):** 9 tools in the backpack; Satchel 0 / 35, Sack 560; standing still on the pile: sweeper 67 tickets in 3 s, Ride-on 182 in 3 s (dug to the pit floor); Ride-on started in the stockroom; first person: both hands on the sweeper bar and on the wheel, every machine part LocalTransparencyModifier 0; seen from outside: both hands on both machines. No errors in Output.
+
+**Not done:** the Lobby place's copies of `ToolCatalog` and `BagCatalog` still have the old lists (the Lobby Studio wasn't open). They should match the gameplay copies again (hash check), next time the Lobby is open. **Not tested:** 2 players, phones.
+
+**Ghoul should know:** the Ride-on model's steering wheel got bigger (Studio template only); if you re-export that model, make the wheel about 1.86 studs wide.
+
 ## 2026-11-28 (later) — Albert's Claude: only the grabber puts tickets in your hand; every other tool fills the bag (Gameplay place)
 
 **Albert's request:** "only the ticket grabber [should] place the ticket in your hands, all the others should place them in your bag so you dont really need to see them".
