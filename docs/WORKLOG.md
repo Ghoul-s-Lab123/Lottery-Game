@@ -2,6 +2,22 @@
 
 Shared notebook between Albert's Claude and Ghoul's Claude. Newest entry on top.
 
+## 2026-11-28 — Albert's Claude: left-hand tools, right-hand ticket stack, strokes for every tool (Gameplay place)
+
+**Built on the 2026-11-27 first-person work** (FirstPersonClient, PileView, PickupFx, the old ViewModel; that work has no WORKLOG entry yet, so whoever made it: please add one). Backups of every script I touched before changing it: `ServerStorage._Backups.*_before_handed_2026_11_28`.
+
+**Done (Studio):**
+- New: `Shared.ToolMotion` (all poses / timings / reach caps in one table), `ArmIK`, `ToolStroke`, `TicketStack`, `HandView` (first person), `WorldRig` (other players' bodies).
+- Server `Tools`: hand tools sit in the LEFT hand (no Handle, `LeftGrip` weld). `Dig.stats`: reach capped to what each tool's working end really reaches (TEST: Scoop 6.5, Rake 5.5, Broom 8, Shovel 8.5; was 12/12/10/12).
+- Small edits: `ToolClient` (HandView, same reach cap, stroke instead of instant fly), `PileClient` (others' tickets go to WorldRig, machine pickups to HandView), `PileView` (`Moved` passes `by`, new `PutBack` hook).
+- Each stroke: Grabber reaches with a telescoping shaft, jaws open / close / open over the stack; Scoop lip down, slide under, tilt back, tip across to the stack; Rake pulls toward you; Broom sweeps flat; Shovel raises, bites, levers, tips; vacuums hold and draw tickets INTO the nozzle (flutter, shrink at the mouth); blower pushes (tickets slide, nothing collected); sweeper / ride-on: left hand on the handle / wheel, wheels, brushes and steering turn.
+
+**Tested (solo Play, screenshots + numbers):** grabber, scoop, shovel, vacuum in first person (frozen mid-stroke: working end on the target, 0.1-1.1 studs); tickets wait until contact, ride, land on the stack (stack count rises at landing); 400-ticket sack shows the same 8-sheet stack; full-body pose seen from outside with `RigSelfTest` (scoop held in the left hand, load tipped across to the right-hand stack; grabber in the left hand); no errors in Output.
+
+**Not tested yet:** a real 2-player session (one works, one watches); rake / broom / blower / shop vac / ride-on strokes on screen; ladders and respawn with tools; phones; 30 vs 60 fps. The shop vac is one mesh, so its hose can't bend (needs a split Blender model: Ghoul's area).
+
+**Ghoul / the other Claude should know:** poses live in `ToolMotion` (tune there, not in the scripts). Tools no longer have a `Handle`; anything that looked for `tool.Handle` must use `tool.Body`.
+
 ## 2026-11-27 (evening) — Albert's Claude: Studio TEST PANEL (both places)
 
 **Done (Studio):** press **P** in a Studio play-test (or the TEST tab, bottom right).
