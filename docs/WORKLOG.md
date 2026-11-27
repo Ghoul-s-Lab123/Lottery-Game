@@ -2,6 +2,21 @@
 
 Shared notebook between Albert's Claude and Ghoul's Claude. Newest entry on top.
 
+## 2026-11-27 (later) — Albert's Claude: Lobby saving, gem Upgrades booth, teleport handoff, phase 09 checks
+
+**Done (Studio, both places):**
+- Lobby loads and saves profiles: identical copies of the Data modules in `Lobby.Data`, plus `Shared` Config (schema 3), ToolCatalog, BagCatalog, HandUpgradeCatalog, HuntTuning (all verified byte-identical with a hash). Includes Ghoul's newer pile tuning (MoundLayers 18, NoiseLayers 4).
+- Gem Upgrades booth works (`Lobby.GemShop` + `BoothClient` Upgrades panel).
+- Handoff: `PlayerData.release` / `reload` (both places); wired into `Lobby.Parties.beginTravel` and gameplay `PostGold` RETURN TO LOBBY.
+- `Session.owns`: the starter grabber is always owned.
+- `Lobby.Main` starts PlayerData and GemShop; ProcessReceipt there still answers NotProcessedYet.
+
+**Tested:** Lobby loads the same save (149 gems); bought Reach level 1 for 15 gems -> 134; then the gameplay place loaded Gems 134 + Reach 1 and the grabber reached 13.5 studs; release -> "released", reload -> "ready" with gems kept; fuzzing every gameplay remote (nothing granted, 200-grab spam = 1 grab).
+
+**Not tested (needs publishing / the owner):** a real Lobby -> Gameplay -> Lobby teleport (Studio loads the last SAVED place versions, which don't have this code yet), 2-player party, phones.
+
+**Ghoul should know:** the Lobby's `Infinite yield possible on Circle1` warning in PartyClient is from map streaming (the rings arrive a moment later); it was there before.
+
 ## 2026-11-27 — Albert's Claude: phase 05 pile, phase 07 tools + economy, counter windows (Gameplay place)
 
 **Done (in Studio, Team Create; scripts live there, not in this repo):**
